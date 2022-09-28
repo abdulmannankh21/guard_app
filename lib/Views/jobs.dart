@@ -27,7 +27,7 @@ class _JobsScreenState extends State<JobsScreen> {
                 icon: IconButton(
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MainScree()));
+                        MaterialPageRoute(builder: (context) => MainScreen()));
                   },
                   icon: Icon(Icons.home),
                 ),

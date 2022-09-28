@@ -39,6 +39,8 @@ dependencies:
   progress_stepper: ^1.0.0
   dotted_border: ^2.0.0+2
   lite_rolling_switch: ^1.0.0
+  firebase_auth: ^3.10.0
+  firebase_core: ^1.23.0
   google_sign_in: ^5.4.2
   flutter_facebook_auth: ^4.4.1+1
   provider: ^6.0.3
