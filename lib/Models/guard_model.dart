@@ -1,49 +1,25 @@
 class GuardDetails {
-  String? firstName;
-  String? lastName;
-  String? dateOfBirth;
+  String? displayName;
   String? email;
-  String? password;
-  String? address;
-  String? summary;
-  String? previousWork;
-  String? profileURL;
-  String? idFront;
-  String? idBack;
-  String? licenseFront;
-  String? licenseBack;
+  String? photoURL;
 
-  GuardDetails(
-      {this.firstName,
-      this.lastName,
-      this.address,
-      this.dateOfBirth,
-      this.email,
-      this.idBack,
-      this.idFront,
-      this.licenseBack,
-      this.licenseFront,
-      this.password,
-      this.previousWork,
-      this.profileURL,
-      this.summary});
+  //constructor
+  GuardDetails({this.displayName, this.email, this.photoURL});
 
-GuardDetails.fromJSON(Map<String,dynamic> json){
-firstName = json["firstName"];
-email = json["email"];
-password = json["password"];
-profileURL =json["profileURL"];
+  // we need to create map
+  GuardDetails.fromJson(Map<String, dynamic> json) {
+    displayName = json["displayName"];
+    photoURL = json["photoUrl"];
+    email = json["email"];
+  }
+  Map<String, dynamic> toJson() {
+    // object - data
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['displayName'] = this.displayName;
+    data['email'] = this.email;
+    data['photoUrl]'] = this.photoURL;
 
-}
-Map<String,dynamic> toJson(){
-  final Map<String,dynamic> data = new Map<String,dynamic>();
-  data['firstName'] = this.firstName;
-  data['email'] = this.email;
-  data['profileURL'] = this.profileURL;
-return data;
-}
+    return data;
 
-
-
-
+  }
 }

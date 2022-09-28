@@ -115,7 +115,7 @@ class _Step4State extends State<Step4> {
               onTap: () {
                // _incrementChevronStepper();
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainScree()));
+                    MaterialPageRoute(builder: (context) => MainScreen()));
               },
               child: Container(
                 margin:EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02,right: MediaQuery.of(context).size.width*0.02) ,

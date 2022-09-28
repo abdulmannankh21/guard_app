@@ -129,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               icon: IconButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MainScree()));
+                      MaterialPageRoute(builder: (context) => MainScreen()));
                 },
                 icon: Icon(Icons.home),
               ),

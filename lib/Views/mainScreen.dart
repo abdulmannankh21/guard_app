@@ -5,14 +5,14 @@ import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 import 'details_profile.dart';
 
-class MainScree extends StatefulWidget {
-  const MainScree({Key? key}) : super(key: key);
+class MainScreen extends StatefulWidget {
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
-  State<MainScree> createState() => _MainScreeState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreeState extends State<MainScree> {
+class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
