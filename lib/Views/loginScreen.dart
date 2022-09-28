@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:guard_app/Views/Steps/step1.dart';
 import 'package:provider/provider.dart';
 
 import 'otp.dart';
@@ -282,11 +283,11 @@ class _ScreenOneState extends State<LoginScreen> {
             //Gmail Button
 
             GestureDetector(
-              onTap: () async{
-                await signInWithGoogle();
-
-                setState((){
-
+              onTap: () {
+                setState(() async{
+                  await signInWithGoogle();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Step1()));
                 });
               },
               child: Container(

@@ -14,7 +14,7 @@ class _OtpVerifyState extends State<OtpVerify> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Security Code",
           style: TextStyle(
               fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),
@@ -24,7 +24,7 @@ class _OtpVerifyState extends State<OtpVerify> {
         elevation: 0.0,
         leading: IconButton(
             onPressed: () {},
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back_ios_outlined,
               color: Colors.black45,
             )),
@@ -97,8 +97,8 @@ class _OtpVerifyState extends State<OtpVerify> {
             ),
             InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MyHomePage()));
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Step1()));
               },
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.9,
