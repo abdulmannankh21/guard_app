@@ -17,6 +17,7 @@ class _Step1State extends State<Step1> {
   var email;
   var address;
   var password;
+  bool _passwordVisible = false ;
 
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
@@ -62,11 +63,10 @@ class _Step1State extends State<Step1> {
           'date of birth': dob,
           'email': email,
           'address': address,
-          'status': 'pending',
-         // 'postedBy': FirebaseAuth.instance.currentUser!.uid
+          'postedBy': FirebaseAuth.instance.currentUser!.uid
         })
-        .then((value) => print('Job Added'))
-        .catchError((error) => print('Failed to Add Job: $error'));
+        .then((value) => print('Guard Added'))
+        .catchError((error) => print('Failed to Add Guard: $error'));
   }
 
 
@@ -277,8 +277,52 @@ class _Step1State extends State<Step1> {
             SizedBox(
               height: 10.0,
             ),
-            customFields(passwordController,"Password", "Enter your password",
-                Icon(Icons.visibility)),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Pasword",
+              style: TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+        TextFormField(
+          keyboardType: TextInputType.text,
+          controller: passwordController,
+          obscureText: !_passwordVisible,
+          //This will obscure text dynamically
+
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            fillColor: Color.fromRGBO(247, 247, 247, 1),
+            filled: true,
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.black, width: 2.0),
+              borderRadius: BorderRadius.circular(5.0),),
+            // Here is key idea
+            hintText: 'Enter your password',
+            suffixIcon: IconButton(
+              icon: Icon(
+                // Based on passwordVisible state choose the icon
+                _passwordVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                // Update the state i.e. toogle the state of passwordVisible variable
+                setState(() {
+                  _passwordVisible = !_passwordVisible;
+                });
+              },
+            ),
+        ),
+        ),
+          ],
+        ),
             SizedBox(
               height: 10.0,
             ),
@@ -306,6 +350,7 @@ class _Step1State extends State<Step1> {
           controller: controller,
           decoration: InputDecoration(
             suffixIcon: icon,
+            suffixIconColor: Colors.black,
             border: InputBorder.none,
             hintText: "$hint",
             fillColor: Color.fromRGBO(247, 247, 247, 1),

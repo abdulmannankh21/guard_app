@@ -238,44 +238,44 @@ class _ScreenOneState extends State<LoginScreen> {
             ),
 
             //Facebook Button
-            GestureDetector(
-              onTap: () {
-                signInWithFacebook();
-               setState((){
-
-               });
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: MediaQuery.of(context).size.height * 0.07,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.black12),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        child: ClipRRect(
-                          child: Image.asset(
-                            "images/facebook.png",
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Text(
-                      "Facebook",
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    )
-                  ],
-                ),
-              ),
-            ),
+            // GestureDetector(
+            //   onTap: () {
+            //     signInWithFacebook();
+            //    setState((){
+            //
+            //    });
+            //   },
+            //   child: Container(
+            //     width: MediaQuery.of(context).size.width * 0.9,
+            //     height: MediaQuery.of(context).size.height * 0.07,
+            //     decoration: BoxDecoration(
+            //       color: Colors.white,
+            //       border: Border.all(color: Colors.black12),
+            //     ),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         Padding(
+            //           padding: const EdgeInsets.only(right: 10),
+            //           child: Container(
+            //             width: 30,
+            //             height: 30,
+            //             child: ClipRRect(
+            //               child: Image.asset(
+            //                 "images/facebook.png",
+            //                 fit: BoxFit.cover,
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //         Text(
+            //           "Facebook",
+            //           style: TextStyle(color: Colors.black, fontSize: 18),
+            //         )
+            //       ],
+            //     ),
+            //   ),
+            // ),
             SizedBox(
               height: 10,
             ),
@@ -343,22 +343,22 @@ class _ScreenOneState extends State<LoginScreen> {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  Future<UserCredential> signInWithFacebook() async {
-    // Trigger the sign-in flow
-    final LoginResult loginResult = await FacebookAuth.instance.login(
-        permissions: ['email', 'public_profile', 'user_birthday']
-    );
-
-    // Create a credential from the access token
-    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-    final userData = await FacebookAuth.instance.getUserData();
-
-    userEmail = userData['email'];
-
-    // Once signed in, return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-  }
+  // Future<UserCredential> signInWithFacebook() async {
+  //   // Trigger the sign-in flow
+  //   final LoginResult loginResult = await FacebookAuth.instance.login(
+  //       permissions: ['email', 'public_profile', 'user_birthday']
+  //   );
+  //
+  //   // Create a credential from the access token
+  //   final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+  //
+  //   final userData = await FacebookAuth.instance.getUserData();
+  //
+  //   userEmail = userData['email'];
+  //
+  //   // Once signed in, return the UserCredential
+  //   return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  // }
 
 
 }
