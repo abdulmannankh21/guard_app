@@ -88,7 +88,14 @@ class _Step3State extends State<Step3> {
         .then((value) =>
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => Step4())))
-        .catchError((error) => print('Failed to Add Guard: $error'));
+        .catchError((error) => Fluttertoast.showToast(
+        msg: "Failed to Add",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.SNACKBAR,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0));
   }
   @override
   Widget build(BuildContext context) => Scaffold(
