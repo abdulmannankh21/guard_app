@@ -6,9 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:progress_stepper/progress_stepper.dart';
 import 'dart:io' as io;
 class Step2 extends StatefulWidget {
-
-
-
   @override
   _Step2State createState() => _Step2State();
 }
@@ -191,7 +188,6 @@ class _Step2State extends State<Step2> {
             // customFields("Password", "Enter your password",Icon(Icons.visibility)),
             // SizedBox(height: 10.0,),
             // customFields("Password", "Enter your Address",Icon(Icons.location_on_rounded)),
-
           ],
         ),
       ),
@@ -221,7 +217,6 @@ class _Step2State extends State<Step2> {
                 border: InputBorder.none,
                 hintText: "$hint",
                 fillColor: Color.fromRGBO(247, 247, 247, 1),
-
                 filled: true,
                 focusedBorder:OutlineInputBorder(
                   borderSide: const BorderSide(color: Colors.black, width: 2.0),
@@ -266,7 +261,6 @@ class _Step2State extends State<Step2> {
             ],
           ),
         ),
-
       ],
     );
   }

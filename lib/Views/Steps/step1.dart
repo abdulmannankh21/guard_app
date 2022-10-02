@@ -67,8 +67,16 @@ class _Step1State extends State<Step1> {
         })
         .then((value) =>
         Navigator.push(context,
-        MaterialPageRoute(builder: (context) => Step2())))
-        .catchError((error) => print('Failed to Add Guard: $error'));
+        MaterialPageRoute(builder: (context) => Step2()),
+        ))
+        .catchError((error) => Fluttertoast.showToast(
+        msg: "Failed to Add",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.SNACKBAR,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0));
   }
 
 
@@ -185,14 +193,6 @@ class _Step1State extends State<Step1> {
                         address = addressController.text;
                         password = passwordController.text;
                         guardDetails();
-                        Fluttertoast.showToast(
-                            msg: "Press Next",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.SNACKBAR,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.green,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
                         clearText();
 
                       });

@@ -1,12 +1,9 @@
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:guard_app/Views/mainScreen.dart';
 import 'package:progress_stepper/progress_stepper.dart';
+
 class Step4 extends StatefulWidget {
-
-
-
   @override
   _Step4State createState() => _Step4State();
 }
@@ -14,12 +11,13 @@ class Step4 extends StatefulWidget {
 class _Step4State extends State<Step4> {
   int _chevronCounter = 0;
   int _customCounter = 0;
-  var icon=[
+  var icon = [
     Icon(Icons.person),
     Icon(Icons.description),
     Icon(Icons.person),
     Icon(Icons.payment),
   ];
+
   void _incrementChevronStepper() {
     setState(() {
       if (_chevronCounter != 5) {
@@ -54,117 +52,123 @@ class _Step4State extends State<Step4> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        backgroundColor: Color.fromRGBO(255, 255, 254, 1),
+        body: Padding(
+          padding: EdgeInsets.only(
+              left: MediaQuery.of(context).size.width * 0.02,
+              right: MediaQuery.of(context).size.width * 0.02,
+              top: 0.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Icon(
+                      Icons.arrow_back_ios,
+                      size: MediaQuery.of(context).size.width * 0.07,
+                    ),
+                    SizedBox(
+                      width: 20.0,
+                    ),
+                    Image.asset('images/header.png'),
+                  ],
+                ),
 
-    backgroundColor: Color.fromRGBO(255, 255, 254, 1),
-    body: Padding(
-      padding:  EdgeInsets.only(left:MediaQuery.of(context).size.width*0.02,right:MediaQuery.of(context).size.width*0.02,top: 0.0 ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: [
-                Icon(Icons.arrow_back_ios,size: MediaQuery.of(context).size.width*0.07,),
-                SizedBox(width: 20.0,),
-                Image.asset('images/header.png'),
-
-              ],
-            ),
-
-
-
-            const SizedBox(
-              height: 10,
-            ),
-            ProgressStepper(
-              width: MediaQuery.of(context).size.width,
-              height: 25,
-              color: Colors.red,
-              progressColor: Colors.amber,
-              stepCount: 4,
-              builder: (index) {
-                double widthOfStep = 300 / 4;
-                if (index == 4) {
-                  return ProgressStepWithArrow(
-                    width: widthOfStep,
-                    defaultColor: Color.fromRGBO(247, 247, 247, 1),
-                    progressColor: Colors.amber,
-                    wasCompleted: true,
-                    child: icon[index-1],
-
-
-                  );
-                }
-                return ProgressStepWithChevron(
-                  width: widthOfStep,
-                  defaultColor: Color.fromRGBO(247, 247, 247, 1),
+                const SizedBox(
+                  height: 10,
+                ),
+                ProgressStepper(
+                  width: MediaQuery.of(context).size.width,
+                  height: 25,
+                  color: Colors.red,
                   progressColor: Colors.amber,
-                  wasCompleted: false,
-                  child: icon[index-1],
+                  stepCount: 4,
+                  builder: (index) {
+                    double widthOfStep = 300 / 4;
+                    if (index == 4) {
+                      return ProgressStepWithArrow(
+                        width: widthOfStep,
+                        defaultColor: Color.fromRGBO(247, 247, 247, 1),
+                        progressColor: Colors.amber,
+                        wasCompleted: true,
+                        child: icon[index - 1],
+                      );
+                    }
+                    return ProgressStepWithChevron(
+                      width: widthOfStep,
+                      defaultColor: Color.fromRGBO(247, 247, 247, 1),
+                      progressColor: Colors.amber,
+                      wasCompleted: false,
+                      child: icon[index - 1],
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.035,
+                ),
+                getFieldsOne(),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.05,
+                ),
 
-
-                );
-              },
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.035,),
-            getFieldsOne(),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
-
-            InkWell(
-              onTap: () {
-               // _incrementChevronStepper();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainScreen()));
-              },
-              child: Container(
-                margin:EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02,right: MediaQuery.of(context).size.width*0.02) ,
-
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.07,
-                decoration: BoxDecoration(color: Colors.black),
-                child: Center(
-                  child: Text(
-                    "Next",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.white),
+                InkWell(
+                  onTap: () {
+                    // _incrementChevronStepper();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MainScreen()));
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.02,
+                        right: MediaQuery.of(context).size.width * 0.02),
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    decoration: BoxDecoration(color: Colors.black),
+                    child: const Center(
+                      child: Text(
+                        "Next",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.white),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     OutlinedButton(
+                //       onPressed: _decrementCustomStepper,
+                //       child: const Text(
+                //         '-1',
+                //         style: TextStyle(
+                //           color: Colors.red,
+                //         ),
+                //       ),
+                //     ),
+                //     OutlinedButton(
+                //       onPressed: _incrementCustomStepper,
+                //       child: const Text(
+                //         '+1',
+                //         style: TextStyle(
+                //           color: Colors.green,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+              ],
             ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     OutlinedButton(
-            //       onPressed: _decrementCustomStepper,
-            //       child: const Text(
-            //         '-1',
-            //         style: TextStyle(
-            //           color: Colors.red,
-            //         ),
-            //       ),
-            //     ),
-            //     OutlinedButton(
-            //       onPressed: _incrementCustomStepper,
-            //       child: const Text(
-            //         '+1',
-            //         style: TextStyle(
-            //           color: Colors.green,
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-          ],
-        ),
-      ),
-    ), // This trailing comma makes auto-formatting nicer for build methods.
-  );
-  Widget getFieldsOne(){
+          ),
+        ), // This trailing comma makes auto-formatting nicer for build methods.
+      );
+
+  Widget getFieldsOne() {
     return Padding(
-      padding: const EdgeInsets.only(left:8.0,right: 8.0),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -173,62 +177,76 @@ class _Step4State extends State<Step4> {
             Text(
               "Provide your payment information",
               style: TextStyle(
-                  fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black),
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black),
             ),
-
 
             SizedBox(
-              height: MediaQuery.of(context).size.height*0.06,
+              height: MediaQuery.of(context).size.height * 0.06,
             ),
-customPic(Icons.account_balance,"Add your bank"),
-             SizedBox(height: 20.0,),
+            customPic(Icons.account_balance, "Add your bank"),
+            SizedBox(
+              height: 20.0,
+            ),
             Padding(
-              padding:  EdgeInsets.only(left:MediaQuery.of(context).size.width*0.39),
-              child: Text("OR",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey),),
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.39),
+              child: Text(
+                "OR",
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+              ),
             ),
-            SizedBox(height: 20.0,),
+            SizedBox(
+              height: 20.0,
+            ),
 
-            customPic(Icons.payment,"Add Credit/Debit Card"),
-
-
-
+            customPic(Icons.payment, "Add Credit/Debit Card"),
 
             // customFields("Password", "Enter your password",Icon(Icons.visibility)),
             // SizedBox(height: 10.0,),
             // customFields("Password", "Enter your Address",Icon(Icons.location_on_rounded)),
-
           ],
         ),
       ),
     );
   }
 
-  Widget customPic(icon,name){
+  Widget customPic(icon, name) {
     return Container(
-      margin:EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02,right: MediaQuery.of(context).size.width*0.02) ,
-      padding: EdgeInsets.only(left: 20.0,right: 10.0),
-      height: MediaQuery.of(context).size.height*0.09,
+      margin: EdgeInsets.only(
+          left: MediaQuery.of(context).size.width * 0.02,
+          right: MediaQuery.of(context).size.width * 0.02),
+      padding: EdgeInsets.only(left: 20.0, right: 10.0),
+      height: MediaQuery.of(context).size.height * 0.09,
       width: MediaQuery.of(context).size.width,
-
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(7.0),
-
       ),
       child: Center(
         child: Padding(
-          padding:  EdgeInsets.only(left:MediaQuery.of(context).size.width*0.18),
+          padding:
+              EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.18),
           child: Row(
             children: [
-              Icon(icon,color: Colors.grey,),
-              SizedBox(width: 10.0,),
-              Text("$name",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey),),
-
+              Icon(
+                icon,
+                color: Colors.grey,
+              ),
+              SizedBox(
+                width: 10.0,
+              ),
+              Text(
+                "$name",
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+              ),
             ],
           ),
         ),
       ),
     );
   }
-
 }
