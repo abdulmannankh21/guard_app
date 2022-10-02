@@ -129,8 +129,8 @@ class _MainScreenState extends State<MainScreen> {
                                   textOffColor: Colors.red,
                                   colorOn: Colors.black,
                                   colorOff: Colors.black,
-                                  iconOn: Icons.admin_panel_settings,
-                                  iconOff: Icons.admin_panel_settings,
+                                  iconOn: Icons.person,
+                                  iconOff: Icons.person_off,
                                   onChanged: (bool state) {
                                     print('turned ${(state) ? 'on' : 'off'}');
                                   },
