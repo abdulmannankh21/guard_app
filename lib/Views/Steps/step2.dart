@@ -2,7 +2,9 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:guard_app/Views/Steps/step3.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:progress_stepper/progress_stepper.dart';
+import 'dart:io' as io;
 class Step2 extends StatefulWidget {
 
 
@@ -14,6 +16,8 @@ class Step2 extends StatefulWidget {
 class _Step2State extends State<Step2> {
   int _chevronCounter = 0;
   int _customCounter = 0;
+  io.File? pickedImage;
+  String pickedImagePath = '';
   var icon=[
     Icon(Icons.person),
     Icon(Icons.description),
@@ -208,7 +212,7 @@ class _Step2State extends State<Step2> {
           dashPattern: [4,4],
           child: GestureDetector(
             onTap: (){
-
+              takePicture(ImageSource.camera);
             },
             child: TextFormField(
               enabled: false,
@@ -265,5 +269,21 @@ class _Step2State extends State<Step2> {
 
       ],
     );
+  }
+
+  Future<void>? takePicture(ImageSource source) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+        source: source,
+        imageQuality: 70, // <- Reduce Image quality
+        maxHeight: 500, // <- reduce the image size
+        maxWidth: 500);
+    if (image != null) {
+      pickedImage = io.File(image.path);
+      pickedImagePath = pickedImage!.path;
+      print('image selected. $pickedImage');
+    } else {
+      print('No image selected.');
+    }
   }
 }
