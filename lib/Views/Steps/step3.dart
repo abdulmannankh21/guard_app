@@ -166,14 +166,6 @@ class _Step3State extends State<Step3> {
                       summary = summaryController.text;
                       work = workController.text;
                       guardDetails();
-                      Fluttertoast.showToast(
-                          msg: "Press Next",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.SNACKBAR,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.green,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
                       clearText();
 
                     });

@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:guard_app/Views/loginScreen.dart';
+import 'package:guard_app/Views/mainScreen.dart';
 
 import '../constants.dart';
 
@@ -46,10 +48,18 @@ class _SplashScreenState extends State<SplashScreen> {
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
+                      Future.delayed(
+                          const Duration(
+                            seconds: 3,
+                          ),
+                              () {});
+                      if (FirebaseAuth.instance.currentUser != null) {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => const MainScreen()));
+                      } else {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) =>  LoginScreen()));
+                      }
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10),
