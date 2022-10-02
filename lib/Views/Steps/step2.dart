@@ -27,7 +27,6 @@ class _Step2State extends State<Step2> {
       }
     });
   }
-
   void _decrementChevronStepper() {
     setState(() {
       if (_chevronCounter != 0) {
@@ -35,7 +34,6 @@ class _Step2State extends State<Step2> {
       }
     });
   }
-
   void _incrementCustomStepper() {
     setState(() {
       if (_customCounter != 3) {
@@ -43,7 +41,6 @@ class _Step2State extends State<Step2> {
       }
     });
   }
-
   void _decrementCustomStepper() {
     setState(() {
       if (_customCounter != 0) {
@@ -173,17 +170,15 @@ class _Step2State extends State<Step2> {
               style: TextStyle(
                   fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
             ),
-            SizedBox(height: 10.0,),
-            customPic(),
+
             SizedBox(height: 10.0,),
             customFields("ID Front*", "Add ID Front",null),
             SizedBox(height: 10.0,),
 
-
             customFields("ID Back*", "Add ID Back",null),
             SizedBox(height: 10.0,),
 
-            customFields("License Front*", "Add License Front",Icon(Icons.calendar_today)),
+            customFields("License Front*", "Add License Front",null),
             SizedBox(height: 10.0,),
 
             customFields("License Back*", "Add License Back",null),
@@ -211,17 +206,23 @@ class _Step2State extends State<Step2> {
         SizedBox(height: 10.0,),
         DottedBorder(
           dashPattern: [4,4],
-          child: TextFormField(
-            decoration: InputDecoration(
-              suffixIcon: icon,
-              border: InputBorder.none,
-              hintText: "$hint",
-              fillColor: Color.fromRGBO(247, 247, 247, 1),
+          child: GestureDetector(
+            onTap: (){
 
-              filled: true,
-              focusedBorder:OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.black, width: 2.0),
-                borderRadius: BorderRadius.circular(5.0),
+            },
+            child: TextFormField(
+              enabled: false,
+              decoration: InputDecoration(
+                suffixIcon: icon,
+                border: InputBorder.none,
+                hintText: "$hint",
+                fillColor: Color.fromRGBO(247, 247, 247, 1),
+
+                filled: true,
+                focusedBorder:OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.black, width: 2.0),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
               ),
             ),
           ),

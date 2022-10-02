@@ -14,6 +14,7 @@ import 'otp.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
+
   @override
   _ScreenOneState createState() => _ScreenOneState();
 
@@ -23,19 +24,51 @@ class _ScreenOneState extends State<LoginScreen> {
   final TextEditingController phoneController = TextEditingController();
   bool tick = false;
   String userEmail = "";
+  FirebaseAuth auth = FirebaseAuth.instance;
+  String verificationID = "";
+  void loginWithPhone() async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: phoneController.text,
+      verificationCompleted: (PhoneAuthCredential credential) {},
+      verificationFailed: (FirebaseAuthException e) {
+        print(e.message);
+      },
+      codeSent: (String verificationId, int? resendToken) {},
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+    auth.verifyPhoneNumber(
+      phoneNumber: phoneController.text,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await auth.signInWithCredential(credential).then((value){
+          print("You are logged in successfully");
+        });
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        print(e.message);
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        verificationID = verificationId;
+        setState(() {
+
+
+        });
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+
+      },
+    );
+  }
+
   Widget _buildDropdownItem(Country country, double dropdownItemWidth) =>
       SizedBox(
         width: MediaQuery.of(context).size.width * 0.23,
         child: Row(
           children: <Widget>[
             CountryPickerUtils.getDefaultFlagImage(country),
-            SizedBox(
-              width: 8.0,
-            ),
             Expanded(
               child: Text(
-                "+${country.phoneCode}(${country.isoCode})",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
+                "  +${country.phoneCode} " "(${country.iso3Code})",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11.0),
               ),
             ),
           ],
@@ -44,22 +77,21 @@ class _ScreenOneState extends State<LoginScreen> {
 
   _buildCountryPickerDropdown(
       {bool filtered = false,
-        bool sortedByIsoCode = false,
-        bool hasPriorityList = false,
-        bool hasSelectedItemBuilder = false}) {
+      bool sortedByIsoCode = false,
+      bool hasPriorityList = false,
+      bool hasSelectedItemBuilder = false}) {
     double dropdownButtonWidth = MediaQuery.of(context).size.width * 0.5;
     //respect dropdown button icon size
-    double dropdownItemWidth = dropdownButtonWidth - 30;
+    double dropdownItemWidth = dropdownButtonWidth - 40;
     double dropdownSelectedItemWidth = dropdownButtonWidth - 30;
     return Row(
       children: <Widget>[
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.32,
           child: Container(
-            padding: EdgeInsets.only(left: 2.0),
+            padding: EdgeInsets.only(left: 6.0),
             width: MediaQuery.of(context).size.width * 0.2,
             height: MediaQuery.of(context).size.height * 0.07,
-            color: Colors.black12,
             child: CountryPickerDropdown(
               onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
               itemHeight: null,
@@ -69,9 +101,9 @@ class _ScreenOneState extends State<LoginScreen> {
               initialValue: 'AR',
               priorityList: hasPriorityList
                   ? [
-                CountryPickerUtils.getCountryByIsoCode('GB'),
-                CountryPickerUtils.getCountryByIsoCode('CN'),
-              ]
+                      CountryPickerUtils.getCountryByIsoCode('GB'),
+                      CountryPickerUtils.getCountryByIsoCode('CN'),
+                    ]
                   : null,
               sortComparator: sortedByIsoCode
                   ? (Country a, Country b) => a.isoCode.compareTo(b.isoCode)
@@ -95,13 +127,16 @@ class _ScreenOneState extends State<LoginScreen> {
             ),
             child: TextField(
               controller: phoneController,
+              cursorColor: Colors.black,
               decoration: InputDecoration(
+                focusColor: Colors.black,
                 border: InputBorder.none,
-                labelText: "Phone",
+                labelText: "Enter Your Phone Number",
+                labelStyle: TextStyle(color: Colors.black),
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
               ),
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.phone,
             ),
           ),
         )
@@ -165,31 +200,29 @@ class _ScreenOneState extends State<LoginScreen> {
             ),
             Row(
               children: [
-                tick ?
-                GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      tick = false;
-                    });
-
-                  },
-                  child: Icon(
-                    Icons.check_box,
-                    size: 30,
-                  ),
-                ):
-                GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      tick = true;
-                    });
-
-                  },
-                  child: Icon(
-                    Icons.check_box_outline_blank,
-                    size: 30,
-                  ),
-                ),
+                tick
+                    ? GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            tick = false;
+                          });
+                        },
+                        child: Icon(
+                          Icons.check_box,
+                          size: 30,
+                        ),
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            tick = true;
+                          });
+                        },
+                        child: Icon(
+                          Icons.check_box_outline_blank,
+                          size: 30,
+                        ),
+                      ),
                 Text(
                   "I agree to Grab a Guard's",
                   style: TextStyle(fontSize: 11, color: Colors.black45),
@@ -205,8 +238,15 @@ class _ScreenOneState extends State<LoginScreen> {
             ),
             InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => OtpVerify()));
+                setState((){
+                  if(tick == true) {
+                    loginWithPhone();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PinCodeVerificationScreen(phoneNumber: phoneController.text,)));
+
+                  }
+                });
+
               },
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.9,
@@ -326,12 +366,14 @@ class _ScreenOneState extends State<LoginScreen> {
       ),
     );
   }
+
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(
@@ -343,22 +385,21 @@ class _ScreenOneState extends State<LoginScreen> {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  // Future<UserCredential> signInWithFacebook() async {
-  //   // Trigger the sign-in flow
-  //   final LoginResult loginResult = await FacebookAuth.instance.login(
-  //       permissions: ['email', 'public_profile', 'user_birthday']
-  //   );
-  //
-  //   // Create a credential from the access token
-  //   final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
-  //
-  //   final userData = await FacebookAuth.instance.getUserData();
-  //
-  //   userEmail = userData['email'];
-  //
-  //   // Once signed in, return the UserCredential
-  //   return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-  // }
-
+// Future<UserCredential> signInWithFacebook() async {
+//   // Trigger the sign-in flow
+//   final LoginResult loginResult = await FacebookAuth.instance.login(
+//       permissions: ['email', 'public_profile', 'user_birthday']
+//   );
+//
+//   // Create a credential from the access token
+//   final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+//
+//   final userData = await FacebookAuth.instance.getUserData();
+//
+//   userEmail = userData['email'];
+//
+//   // Once signed in, return the UserCredential
+//   return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+// }
 
 }
