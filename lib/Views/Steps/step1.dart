@@ -65,7 +65,9 @@ class _Step1State extends State<Step1> {
           'address': address,
           'postedBy': FirebaseAuth.instance.currentUser!.uid
         })
-        .then((value) => print('Guard Added'))
+        .then((value) =>
+        Navigator.push(context,
+        MaterialPageRoute(builder: (context) => Step2())))
         .catchError((error) => print('Failed to Add Guard: $error'));
   }
 
@@ -192,8 +194,7 @@ class _Step1State extends State<Step1> {
                             textColor: Colors.white,
                             fontSize: 16.0);
                         clearText();
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Step2()));
+
                       });
                     },
                     child: Container(
