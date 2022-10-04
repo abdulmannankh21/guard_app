@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:guard_app/Models/guard_model.dart';
 import 'package:guard_app/Views/profile.dart';
 
 import 'jobs.dart';
@@ -8,9 +13,26 @@ class DetailsScreen extends StatefulWidget {
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
+
+
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
+  User? user = FirebaseAuth.instance.currentUser;
+  GuardDetails loggedInUser = GuardDetails();
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection("guard")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      this.loggedInUser = GuardDetails.fromJson(value.data());
+      setState(() {});
+    });
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -85,7 +107,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     children: [
                       CircleAvatar(
                         radius: 30.0,
-                        child: Icon(Icons.person),
+                        child: Image.network("${loggedInUser.photoURL}"),
                       ),
                       Container(
                         width: 70,
@@ -115,7 +137,9 @@ borderRadius: BorderRadius.circular(7.0)
                   child: Row(
                     children: [
                       Text(
-                        "Joe Doe",
+                        "${
+                        loggedInUser.displayName
+                        }",
                         style: TextStyle(
                             fontWeight:
                             FontWeight
@@ -146,7 +170,7 @@ borderRadius: BorderRadius.circular(7.0)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
+                    "${loggedInUser.summary}",
                     style: TextStyle(
 
                         fontSize: size.width*0.04,

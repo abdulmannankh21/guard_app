@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guard_app/Views/jobs.dart';
-import 'package:guard_app/Views/profile.dart';
+import 'package:guard_app/Views/google_map.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 import 'details_profile.dart';
@@ -13,6 +13,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -65,33 +67,14 @@ class _MainScreenState extends State<MainScreen> {
           Container(
             width: MediaQuery.of(context).size.width * 1,
             height: MediaQuery.of(context).size.height * 1,
-            decoration: BoxDecoration(
-                color: Colors.black,
-                image: DecorationImage(
-                    image: AssetImage("images/maps.png"), fit: BoxFit.cover)),
-            child: Text(""),
+            //Map
+            child: Map(),
           ),
           Container(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.black45,
-                        ),
-                        hintText: "Search",
-                        hintStyle: TextStyle(color: Colors.black45),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(30))),
-                  ),
-                ),
+
                 Container(
                   height: MediaQuery.of(context).size.height * 0.3,
                   width: MediaQuery.of(context).size.width,
