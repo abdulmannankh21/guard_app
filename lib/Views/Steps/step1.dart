@@ -88,36 +88,6 @@ class _Step1State extends State<Step1> {
     Icon(Icons.person),
     Icon(Icons.payment),
   ];
-
-  // void _incrementChevronStepper() {
-  //   setState(() {
-  //     if (_chevronCounter != 5) {
-  //       _chevronCounter++;
-  //     }
-  //   });
-  // }
-  // void _decrementChevronStepper() {
-  //   setState(() {
-  //     if (_chevronCounter != 0) {
-  //       _chevronCounter--;
-  //     }
-  //   });
-  // }
-  // void _incrementCustomStepper() {
-  //   setState(() {
-  //     if (_customCounter != 3) {
-  //       _customCounter++;
-  //     }
-  //   });
-  // }
-  // void _decrementCustomStepper() {
-  //   setState(() {
-  //     if (_customCounter != 0) {
-  //       _customCounter--;
-  //     }
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Color.fromRGBO(255, 255, 254, 1),
@@ -348,6 +318,7 @@ class _Step1State extends State<Step1> {
           height: 10.0,
         ),
         TextFormField(
+          textInputAction: TextInputAction.next,
           controller: controller,
           decoration: InputDecoration(
             suffixIcon: icon,
