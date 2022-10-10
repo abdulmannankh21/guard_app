@@ -50,6 +50,7 @@ dependencies:
   firebase_storage: ^10.3.6
   pin_code_fields: ^7.4.0
   google_maps_flutter: ^2.2.1
+  flutter_riverpod: ^2.0.2
 
 dev_dependencies:
   flutter_test:

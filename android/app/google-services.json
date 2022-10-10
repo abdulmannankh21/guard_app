@@ -7,6 +7,43 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:918228134259:android:61bd0ec6e826f0e81f7d06",
+        "android_client_info": {
+          "package_name": "com.example.grab_guard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918228134259-p8uc8284u3jrq9ncbdlvb5n1ibo3b0dg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.grab_guard",
+            "certificate_hash": "a968e9b63fdfe461a66e34c5effaea601d3ff463"
+          }
+        },
+        {
+          "client_id": "918228134259-95cb6stdm3m1krt6k5fd9psvvsa5jqsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoYbtmW8k6Mf1s1N6PTlggCZszvtwDMJ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918228134259-95cb6stdm3m1krt6k5fd9psvvsa5jqsm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:918228134259:android:135423cdf608ab7a1f7d06",
         "android_client_info": {
           "package_name": "com.example.guard_app"

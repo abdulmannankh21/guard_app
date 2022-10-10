@@ -2,26 +2,28 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:guard_app/Features/authentiction/auth_provider.dart';
 import 'package:guard_app/Views/Steps/step1.dart';
 import 'package:guard_app/Views/password.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class PinCodeVerificationScreen extends StatefulWidget {
-
-  final String? phoneNumber;
+class PinCodeVerificationScreen extends ConsumerStatefulWidget {
+  final String verificationId;
 
   const PinCodeVerificationScreen({
     Key? key,
-    required this.phoneNumber,
+    required this.verificationId,
   }) : super(key: key);
 
   @override
-  _PinCodeVerificationScreenState createState() =>
+  ConsumerState<PinCodeVerificationScreen> createState() =>
       _PinCodeVerificationScreenState();
 }
 
-class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
+class _PinCodeVerificationScreenState
+    extends ConsumerState<PinCodeVerificationScreen> {
   final TextEditingController otpController = TextEditingController();
   bool tick = false;
   String userEmail = "";
@@ -40,10 +42,16 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
 
   @override
   void dispose() {
-
     super.dispose();
   }
 
+    void verifyOTP(WidgetRef ref, BuildContext context, String userOTP) {
+    ref.read(authControllerProvider).verifyOTP(
+          context,
+          verificationID,
+          userOTP,
+        );
+  }
   // snackBar Widget
   snackBar(String? message) {
     return ScaffoldMessenger.of(context).showSnackBar(
@@ -83,20 +91,12 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
               ),
               Padding(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8),
                 child: RichText(
                   text: TextSpan(
-                      text: "Enter the code sent to ",
-                      children: [
-                        TextSpan(
-                            text: widget.phoneNumber,
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15)),
-                      ],
+                      text: "Enter the code you received on your mobile ",
                       style:
-                      const TextStyle(color: Colors.black54, fontSize: 15)),
+                          const TextStyle(color: Colors.black54, fontSize: 15)),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -143,15 +143,11 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                           blurRadius: 10,
                         )
                       ],
-                      onCompleted: (v) {
-                          debugPrint("Completed");
-
-                      },
+                      
                       onChanged: (value) {
                         debugPrint(value);
                         setState(() {
                           currentText = value;
-
                         });
                       },
                       beforeTextPaste: (text) {
@@ -199,11 +195,16 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  setState((){
-                      verifyOTP();
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Step1()));
-                      snackBar("OTP Verified!!");
+                  setState(() {
+                    
+                      
+                        verifyOTP(ref, context, otpController.text);
+                      
+                      
+                    
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Step1()));
+                    snackBar("OTP Verified!!");
                   });
                 },
                 child: Container(
@@ -221,7 +222,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
@@ -229,21 +229,5 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
     );
   }
 
-  void verifyOTP() async {
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationID, smsCode: otpController.text);
-
-    await auth.signInWithCredential(credential).then((value) {
-      print("You are logged in successfully");
-      Fluttertoast.showToast(
-          msg: "You are logged in successfully",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
-    });
-  }
+ 
 }
