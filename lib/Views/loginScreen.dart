@@ -1,64 +1,28 @@
 import 'package:country_pickers/country.dart';
-import 'package:country_pickers/country_picker_dialog.dart';
 import 'package:country_pickers/country_picker_dropdown.dart';
 import 'package:country_pickers/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:guard_app/Features/authentiction/auth_provider.dart';
 import 'package:guard_app/Views/Steps/step1.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'otp.dart';
-
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
 
   @override
-  _ScreenOneState createState() => _ScreenOneState();
-
+  ConsumerState<LoginScreen> createState() => _ScreenOneState();
 }
 
-class _ScreenOneState extends State<LoginScreen> {
+class _ScreenOneState extends ConsumerState<LoginScreen> {
   final TextEditingController phoneController = TextEditingController();
   bool tick = false;
   String userEmail = "";
   FirebaseAuth auth = FirebaseAuth.instance;
   String verificationID = "";
-  void loginWithPhone() async {
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phoneController.text,
-      verificationCompleted: (PhoneAuthCredential credential) {},
-      verificationFailed: (FirebaseAuthException e) {
-        print(e.message);
-      },
-      codeSent: (String verificationId, int? resendToken) {},
-      codeAutoRetrievalTimeout: (String verificationId) {},
-    );
-    auth.verifyPhoneNumber(
-      phoneNumber: phoneController.text,
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        await auth.signInWithCredential(credential).then((value){
-          print("You are logged in successfully");
-        });
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        print(e.message);
-      },
-      codeSent: (String verificationId, int? resendToken) {
-        verificationID = verificationId;
-        setState(() {
-
-
-        });
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-
-      },
-    );
-  }
-
+  String countryCode = "";
   Widget _buildDropdownItem(Country country, double dropdownItemWidth) =>
       SizedBox(
         width: MediaQuery.of(context).size.width * 0.23,
@@ -109,7 +73,7 @@ class _ScreenOneState extends State<LoginScreen> {
                   ? (Country a, Country b) => a.isoCode.compareTo(b.isoCode)
                   : null,
               onValuePicked: (Country country) {
-                print("${country.name}");
+                countryCode = country.phoneCode;
               },
             ),
           ),
@@ -238,15 +202,12 @@ class _ScreenOneState extends State<LoginScreen> {
             ),
             InkWell(
               onTap: () {
-                setState((){
-                  if(tick == true) {
-                    loginWithPhone();
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PinCodeVerificationScreen(phoneNumber: phoneController.text,)));
-
+                setState(() {
+                  if (tick == true) {
+                    ref.read(authControllerProvider).signInWithPhone(
+                        context,'+'+ countryCode + phoneController.text);
                   }
                 });
-
               },
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.9,
@@ -324,10 +285,9 @@ class _ScreenOneState extends State<LoginScreen> {
 
             GestureDetector(
               onTap: () {
-                setState(() async{
-                  await signInWithGoogle();
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Step1()));
+                setState(() async {
+                  ref.read(authControllerProvider).signInWithGoogle(context);
+                 
                 });
               },
               child: Container(
