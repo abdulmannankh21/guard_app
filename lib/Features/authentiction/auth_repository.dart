@@ -57,7 +57,7 @@ class AuthRespository {
       verificationCompleted: (phoneAuthCredential) async {
         await auth.signInWithCredential(phoneAuthCredential).then((value) {
                Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Password()));
+                      MaterialPageRoute(builder: (context) => Step1()));
       print("You phone is verified ");
       Fluttertoast.showToast(
           msg: "You phone number is verified succesfully in successfully",
@@ -135,11 +135,8 @@ class AuthRespository {
         
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackBar(
-            content: 'Error occurred using Google Sign-In. Try again.',
-          ),
-        );
+        
+        //add handling
       }
     }
 
