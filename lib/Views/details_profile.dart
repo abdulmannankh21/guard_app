@@ -1,43 +1,48 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:guard_app/Features/Storage/data_provider.dart';
 import 'package:guard_app/Models/guard_model.dart';
+import 'package:guard_app/Models/user_model.dart';
 import 'package:guard_app/Views/profile.dart';
 
 import 'jobs.dart';
 import 'mainScreen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DetailsScreen extends StatefulWidget {
+class DetailsScreen extends ConsumerStatefulWidget {
   const DetailsScreen({Key? key}) : super(key: key);
 
   @override
-  State<DetailsScreen> createState() => _DetailsScreenState();
+  ConsumerState<DetailsScreen> createState() => _DetailsScreenState();
 }
 
-class _DetailsScreenState extends State<DetailsScreen> {
-  User? user = FirebaseAuth.instance.currentUser;
-  GuardDetails loggedInUser = GuardDetails();
+class _DetailsScreenState extends ConsumerState<DetailsScreen> {
+  UserModel? user;
+  bool loading = true;
+
+  void getData() async {
+    var value = await ref.read(dataProvier).getCurrentUserData();
+
+    setState(() {
+      user = value;
+      loading = false;
+    });
+  
+  }
 
   @override
   void initState() {
     super.initState();
-    FirebaseFirestore.instance
-        .collection("guard")
-        .doc(user!.uid)
-        .get()
-        .then((value) {
-      loggedInUser = GuardDetails.fromJson(value.data());
-      setState(() {});
-    });
+
+    getData();
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return DefaultTabController(
+    return loading?Center(child: CircularProgressIndicator(color: Colors.grey),):DefaultTabController(
       length: 2,
       child: Scaffold(
         bottomNavigationBar: BottomNavigationBar(
@@ -94,8 +99,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
           automaticallyImplyLeading: true,
         ),
         body: Padding(
-          padding: EdgeInsets.only(
-              left: size.width * 0.02, top: size.height * 0.01),
+          padding:
+              EdgeInsets.only(left: size.width * 0.02, top: size.height * 0.01),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,22 +111,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CircleAvatar(
+                      backgroundImage: NetworkImage("${user?.profilePicUrl}"),
                       radius: 30.0,
-                      child: Image.network("${loggedInUser.photoURL}"),
                     ),
-                    Container(
-                      width: 70,
-                      height: 35,
-                      decoration: BoxDecoration(
-                          color: Colors.amber,
-                          borderRadius: BorderRadius.circular(7.0)),
-                      child: Center(
-                        child: Text(
-                          "Hire",
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
+                    InkWell(
+                      
+                      child: Container(
+                        width: 70,
+                        height: 35,
+                        decoration: BoxDecoration(
+                            color: Colors.amber,
+                            borderRadius: BorderRadius.circular(7.0)),
+                        child: Center(
+                          child: Text(
+                            "Hire",
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
                         ),
                       ),
                     )
@@ -133,7 +141,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 child: Row(
                   children: [
                     Text(
-                      "${loggedInUser.displayName}",
+                      "${user?.firstName}  ${user?.lastName}",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
@@ -165,7 +173,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "${loggedInUser.summary}",
+                  "${user?.summary}",
                   style: TextStyle(
                       fontSize: size.width * 0.04, color: Colors.grey),
                 ),
@@ -183,8 +191,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               Container(
-                                constraints:
-                                    BoxConstraints.expand(height: 30),
+                                constraints: BoxConstraints.expand(height: 30),
                                 child: TabBar(
                                     labelColor: Colors.black,
                                     indicatorSize: TabBarIndicatorSize.label,
@@ -246,7 +253,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Steve Smith - key holding",
+                "steve smith -key holding",
                 style: TextStyle(
                     fontSize: size.width * 0.04,
                     color: Colors.black,

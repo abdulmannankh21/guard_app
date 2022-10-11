@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             seconds: 2,
                           ),
                               () {});
-                      if (false) {
+                      if (FirebaseAuth.instance.currentUser!=null) {
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) => const MainScreen()));
                       } else {

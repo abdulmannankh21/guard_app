@@ -19,7 +19,8 @@ class StorageMethods {
   FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  StorageMethods({required auth, required firestore, required storage});
+  StorageMethods(
+      {required this.auth, required this.firestore, required this.storage});
 
   SnackBar customSnackBar({required String content}) {
     return SnackBar(
@@ -53,7 +54,16 @@ class StorageMethods {
       required String address,
       required String password,
       required BuildContext context}) async {
-    await firestore.collection('UserBasic').doc(auth.currentUser?.uid).set(
+    firestore
+        .collection('Guard')
+        .doc(auth.currentUser?.uid)
+        .collection('jobs').doc();
+    await firestore
+        .collection('Guard')
+        .doc(auth.currentUser?.uid)
+        .collection('Basic')
+        .doc('info')
+        .set(
       {
         'firstName': firstName,
         'secondName': secondName,
@@ -70,13 +80,13 @@ class StorageMethods {
         MaterialPageRoute(builder: (context) => Step2()),
       );
     }).catchError((error) => Fluttertoast.showToast(
-        msg: "Failed to Add",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.SNACKBAR,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0));
+            msg: "Failed to Add",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0));
   }
 
   Future<void> saveImages(
@@ -86,7 +96,12 @@ class StorageMethods {
       required String idBackUrl,
       required String licenseFrotUrl,
       required String licenseBackUrl}) async {
-    await firestore.collection('UserBasic').doc(auth.currentUser?.uid).set({
+    await firestore
+        .collection('Guard')
+        .doc(auth.currentUser?.uid)
+        .collection('Basic')
+        .doc('info')
+        .set({
       'profilePicUrl': profilePicUrl,
       'idFrontURl': idFrontURl,
       'idBackUrl': idBackUrl,
@@ -100,13 +115,13 @@ class StorageMethods {
         MaterialPageRoute(builder: (context) => Step3()),
       );
     }).catchError((error) => Fluttertoast.showToast(
-        msg: "Failed to Add",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.SNACKBAR,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0));
+            msg: "Failed to Add",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.SNACKBAR,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0));
     ;
     ;
   }
@@ -116,9 +131,13 @@ class StorageMethods {
       required String workExperience,
       required BuildContext context}) async {
     try {
-      await firestore.collection('UserBasic').doc(auth.currentUser?.uid).set(
-          {'summary': summary, 'workExperience': workExperience},
-          SetOptions(merge: true)).then((value) {
+      await firestore
+          .collection('Guard')
+          .doc(auth.currentUser?.uid)
+          .collection('Basic')
+          .doc('info')
+          .set({'summary': summary, 'workExperience': workExperience},
+              SetOptions(merge: true)).then((value) {
         ScaffoldMessenger.of(context)
             .showSnackBar(customSnackBar(content: "Data aded succesfully"));
         Navigator.push(
