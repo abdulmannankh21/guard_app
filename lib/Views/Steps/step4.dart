@@ -1,6 +1,6 @@
-import 'package:dotted_border/dotted_border.dart';
+
 import 'package:flutter/material.dart';
-import 'package:guard_app/Views/mainScreen.dart';
+import 'package:guard_app/Views/screens/mainScreen.dart';
 import 'package:progress_stepper/progress_stepper.dart';
 
 class Step4 extends StatefulWidget {
@@ -137,29 +137,7 @@ class _Step4State extends State<Step4> {
                     ),
                   ),
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     OutlinedButton(
-                //       onPressed: _decrementCustomStepper,
-                //       child: const Text(
-                //         '-1',
-                //         style: TextStyle(
-                //           color: Colors.red,
-                //         ),
-                //       ),
-                //     ),
-                //     OutlinedButton(
-                //       onPressed: _incrementCustomStepper,
-                //       child: const Text(
-                //         '+1',
-                //         style: TextStyle(
-                //           color: Colors.green,
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
+              
               ],
             ),
           ),
@@ -204,9 +182,6 @@ class _Step4State extends State<Step4> {
 
             customPic(Icons.payment, "Add Credit/Debit Card"),
 
-            // customFields("Password", "Enter your password",Icon(Icons.visibility)),
-            // SizedBox(height: 10.0,),
-            // customFields("Password", "Enter your Address",Icon(Icons.location_on_rounded)),
           ],
         ),
       ),

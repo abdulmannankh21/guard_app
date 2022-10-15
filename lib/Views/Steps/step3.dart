@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:guard_app/Features/Storage/storage_provider.dart';
@@ -17,7 +18,7 @@ class _Step3State extends ConsumerState<Step3> {
   var work;
   final TextEditingController summaryController = new TextEditingController();
   final TextEditingController workController = new TextEditingController();
-
+  bool disabled = true;
   int _chevronCounter = 0;
   int _customCounter = 0;
   var icon = [
@@ -77,9 +78,6 @@ class _Step3State extends ConsumerState<Step3> {
     workController.clear();
   }
 
-  
-  
-
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Color.fromRGBO(255, 255, 254, 1),
@@ -105,7 +103,6 @@ class _Step3State extends ConsumerState<Step3> {
                     Image.asset('images/header.png'),
                   ],
                 ),
-
                 const SizedBox(
                   height: 10,
                 ),
@@ -142,24 +139,34 @@ class _Step3State extends ConsumerState<Step3> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.05,
                 ),
-
                 InkWell(
                   onTap: () {
-                    setState(() {
-                      summary = summaryController.text;
-                      work = workController.text;
-                    });
-                    
+                    if (!disabled) {
+                      setState(() {
+                        summary = summaryController.text;
+                        work = workController.text;
+                      });
 
-                    ref.read(storageProvider).addDetail(summary: summary, workExperience: work,context: context);
-                    
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: ((context) => Step4())));
+                      ref.read(storageProvider).addDetail(
+                          summary: summary,
+                          workExperience: work,
+                          context: context);
+
+                      EasyLoading.showSuccess("Details added");
+
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: ((context) => Step4())));
+                    } else {
+                      EasyLoading.showError("Please fill all the fields");
+                    }
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.07,
-                    decoration: BoxDecoration(color: Colors.black),
+                    decoration: BoxDecoration(
+                        color: disabled
+                            ? Color.fromARGB(255, 64, 64, 64)
+                            : Colors.black),
                     child: Center(
                       child: Text(
                         "Next",
@@ -171,7 +178,6 @@ class _Step3State extends ConsumerState<Step3> {
                     ),
                   ),
                 ),
-              
               ],
             ),
           ),
@@ -193,7 +199,6 @@ class _Step3State extends ConsumerState<Step3> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black),
             ),
-
             SizedBox(
               height: 10.0,
             ),
@@ -202,13 +207,11 @@ class _Step3State extends ConsumerState<Step3> {
             SizedBox(
               height: 10.0,
             ),
-
             customFields(workController, "Previous Work*",
                 "Add about your work Experince ", null),
             SizedBox(
               height: 10.0,
             ),
-
           ],
         ),
       ),
@@ -230,6 +233,13 @@ class _Step3State extends ConsumerState<Step3> {
         Container(
           height: 6 * 24.0,
           child: TextFormField(
+            onChanged: ((value) {
+              if (summaryController.text != "" && workController.text != "") {
+                setState(() {
+                  disabled = false;
+                });
+              }
+            }),
             controller: controller,
             maxLines: 6,
             decoration: InputDecoration(

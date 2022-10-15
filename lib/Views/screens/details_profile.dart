@@ -1,12 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:guard_app/Features/Storage/data_provider.dart';
-import 'package:guard_app/Models/guard_model.dart';
 import 'package:guard_app/Models/user_model.dart';
-import 'package:guard_app/Views/profile.dart';
-
-import 'jobs.dart';
+import '../widgets/jobs.dart';
 import 'mainScreen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -42,63 +37,14 @@ class _DetailsScreenState extends ConsumerState<DetailsScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return loading?Center(child: CircularProgressIndicator(color: Colors.grey),):DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          selectedItemColor: Colors.black,
-          type: BottomNavigationBarType.fixed,
-          currentIndex: 3,
-          items: [
-            BottomNavigationBarItem(
-                icon: IconButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MainScreen()));
-                  },
-                  icon: Icon(Icons.home),
-                ),
-                label: "Home"),
-            BottomNavigationBarItem(
-                icon: IconButton(
-                  onPressed: () {
-                    //
-                    // //
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) => Bookings()));
-                  },
-                  icon: Icon(Icons.my_library_books),
-                ),
-                label: "Earnings"),
-            BottomNavigationBarItem(
-                icon: IconButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => JobsScreen()));
-                  },
-                  icon: Icon(Icons.local_activity_outlined),
-                ),
-                label: "Jobs"),
-            BottomNavigationBarItem(
-                icon: IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DetailsScreen()));
-                  },
-                  icon: Icon(Icons.person_outline),
-                ),
-                label: "Profile"),
-          ],
-        ),
+    return  Scaffold(
+        
         appBar: AppBar(
           elevation: 0.0,
           backgroundColor: Colors.black,
           automaticallyImplyLeading: true,
         ),
-        body: Padding(
+        body: loading?Center(child: CircularProgressIndicator(color: Colors.grey),):Padding(
           padding:
               EdgeInsets.only(left: size.width * 0.02, top: size.height * 0.01),
           child: Column(
@@ -114,25 +60,7 @@ class _DetailsScreenState extends ConsumerState<DetailsScreen> {
                       backgroundImage: NetworkImage("${user?.profilePicUrl}"),
                       radius: 30.0,
                     ),
-                    InkWell(
-                      
-                      child: Container(
-                        width: 70,
-                        height: 35,
-                        decoration: BoxDecoration(
-                            color: Colors.amber,
-                            borderRadius: BorderRadius.circular(7.0)),
-                        child: Center(
-                          child: Text(
-                            "Hire",
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    )
+                   
                   ],
                 ),
               ),
@@ -226,7 +154,7 @@ class _DetailsScreenState extends ConsumerState<DetailsScreen> {
             ],
           ),
         ),
-      ),
+      
     );
   }
 
@@ -305,7 +233,7 @@ class _DetailsScreenState extends ConsumerState<DetailsScreen> {
           Text("5 Stars"),
           Container(
             margin: EdgeInsets.only(left: 10.0, right: 10.0),
-            width: size.width * 0.7,
+            width: size.width * 0.5,
             height: 9.0,
             decoration: BoxDecoration(
               color: Colors.amber,
