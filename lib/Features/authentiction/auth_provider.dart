@@ -6,9 +6,9 @@ import 'dart:io';
 import 'package:guard_app/Models/user_model.dart';
 
 // ignore: prefer_typing_uninitialized_variables
-var refv;
+
 final authControllerProvider = Provider((ref) {
-  refv = ref;
+  
   final authRespository = ref.watch(authrepoProvider);
 
   return AuthController(authrepository: authRespository);
@@ -16,20 +16,14 @@ final authControllerProvider = Provider((ref) {
 
 //future provider
 
-final userDataAuthProvider = FutureProvider((ref) {
-  final authController = ref.watch(authControllerProvider);
-  return authController.getUserData();
-});
+
 
 class AuthController {
   late final AuthRespository authrepository;
 
   AuthController({required this.authrepository});
 
-  Future<UserModel?> getUserData() async {
-    var user = await authrepository.getCurrentUserData();
-    return user;
-  }
+
 
   //method for Gmail authentication
 
@@ -48,13 +42,5 @@ class AuthController {
         context: context, verificationId: verificationId, userOTP: userOTP);
   }
 
-  void saveUserDataToFirebase(
-      BuildContext context, String name, File? profilePic) {
-    authrepository.saveUserDataToFirebase(
-      name: name,
-      profilePic: profilePic,
-      ref: refv,
-      context: context,
-    );
-  }
+ 
 }

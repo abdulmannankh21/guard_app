@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:guard_app/Views/jobs.dart';
 import 'package:guard_app/Views/google_map.dart';
@@ -13,7 +16,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  bool isOnline = true;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +79,6 @@ class _MainScreenState extends State<MainScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-
                 Container(
                   height: MediaQuery.of(context).size.height * 0.3,
                   width: MediaQuery.of(context).size.width,
@@ -115,10 +119,13 @@ class _MainScreenState extends State<MainScreen> {
                                   iconOn: Icons.person,
                                   iconOff: Icons.person_off,
                                   onChanged: (bool state) {
-                                    print('turned ${(state) ? 'on' : 'off'}');
+                                    firestore
+                                        .collection('Guard')
+                                        .doc(auth.currentUser!.uid)
+                                        .set({'active': state});
                                   },
-                                  onDoubleTap: () {},
                                   onTap: () {},
+                                  onDoubleTap: () {},
                                   onSwipe: () {},
                                 ),
                               )

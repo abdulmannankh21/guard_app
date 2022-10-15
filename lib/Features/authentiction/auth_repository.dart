@@ -33,16 +33,7 @@ class AuthRespository {
     );
   }
 
-  Future<UserModel?> getCurrentUserData() async {
-    var userData =
-        await firestore.collection('users').doc(auth.currentUser?.uid).get();
-
-    UserModel? user = null;
-    if (userData.data() != null) {
-      user = UserModel.fromMap(userData.data()!);
-    }
-    return user;
-  }
+  
 
   AuthRespository({required this.auth, required this.firestore});
 
@@ -57,7 +48,7 @@ class AuthRespository {
       verificationCompleted: (phoneAuthCredential) async {
         await auth.signInWithCredential(phoneAuthCredential).then((value) {
                Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Password()));
+                      MaterialPageRoute(builder: (context) => Step1()));
       print("You phone is verified ");
       Fluttertoast.showToast(
           msg: "You phone number is verified succesfully in successfully",
@@ -135,11 +126,8 @@ class AuthRespository {
         
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackBar(
-            content: 'Error occurred using Google Sign-In. Try again.',
-          ),
-        );
+        
+        //add handling
       }
     }
 
@@ -170,47 +158,7 @@ class AuthRespository {
     }
   }
 
-  void saveUserDataToFirebase({
-    required String name,
-    required File? profilePic,
-    required ProviderRef ref,
-    required BuildContext context,
-  }) async {
-    try {
-      String uid = auth.currentUser!.uid;
-      String photoUrl =
-          'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png';
-
-      if (profilePic != null) {
-        photoUrl = await ref
-            .read(commonFirebaseStorageRepositoryProvider)
-            .storeFileToFirebase(
-              'profilePic/$uid',
-              profilePic,
-            );
-      }
-
-      var user = UserModel(
-        name: name,
-        uid: uid,
-        profilePic: photoUrl,
-        isOnline: true,
-        phoneNumber: auth.currentUser!.phoneNumber!,
-        groupId: [],
-      );
-
-      await firestore.collection('users').doc(uid).set(user.toMap());
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Password(),
-        ),
-        (route) => false,
-      );
-    } catch (e) {}
-  }
-
+ 
   Stream<UserModel> userData(String userId) {
     return firestore.collection('users').doc(userId).snapshots().map(
           (event) => UserModel.fromMap(
@@ -219,9 +167,5 @@ class AuthRespository {
         );
   }
 
-  void setUserState(bool isOnline) async {
-    await firestore.collection('users').doc(auth.currentUser!.uid).update({
-      'isOnline': isOnline,
-    });
-  }
+  
 }

@@ -1,23 +1,22 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:guard_app/Views/Steps/step2.dart';
-import 'package:progress_stepper/progress_stepper.dart';
 
-class Step1 extends StatefulWidget {
+import 'package:guard_app/Features/Storage/storage_provider.dart';
+import 'package:progress_stepper/progress_stepper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class Step1 extends ConsumerStatefulWidget {
   @override
-  _Step1State createState() => _Step1State();
+  ConsumerState<Step1> createState() => _Step1State();
 }
 
-class _Step1State extends State<Step1> {
+class _Step1State extends ConsumerState<Step1> {
   var firstName;
   var lastName;
   var dob;
   var email;
   var address;
   var password;
-  bool _passwordVisible = false ;
+  bool _passwordVisible = false;
 
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
@@ -51,34 +50,6 @@ class _Step1State extends State<Step1> {
     emailController.clear();
     passwordController.clear();
   }
-
-// Adding Guard
-  CollectionReference guard = FirebaseFirestore.instance.collection('guard');
-  Future<void> guardDetails() {
-    return guard
-        .add({
-          'id': guard.doc().id,
-          'first name': firstName,
-          'last name': lastName,
-          'date of birth': dob,
-          'email': email,
-          'address': address,
-          'postedBy': FirebaseAuth.instance.currentUser!.uid
-        })
-        .then((value) =>
-        Navigator.push(context,
-        MaterialPageRoute(builder: (context) => Step2()),
-        ))
-        .catchError((error) => Fluttertoast.showToast(
-        msg: "Failed to Add",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.SNACKBAR,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0));
-  }
-
 
   int _chevronCounter = 0;
   int _customCounter = 0;
@@ -162,9 +133,17 @@ class _Step1State extends State<Step1> {
                         email = emailController.text;
                         address = addressController.text;
                         password = passwordController.text;
-                        guardDetails();
+
                         clearText();
 
+                        ref.read(storageProvider).saveUser(
+                            context: context,
+                            firstName: firstName,
+                            secondName: lastName,
+                            dateOfBirth: dob,
+                            email: email,
+                            password: password,
+                            address: address);
                       });
                     },
                     child: Container(
@@ -229,82 +208,95 @@ class _Step1State extends State<Step1> {
             SizedBox(
               height: 10.0,
             ),
-            customFields(firstNameController,"First name", "Enter your first name", null,
+            customFields(
+              firstNameController,
+              "First name",
+              "Enter your first name",
+              null,
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            customFields(
+                lastNameController, "Last name", "Enter your Last name", null),
+            SizedBox(
+              height: 10.0,
+            ),
+            customFields(
+              dobController,
+              "Date Of birth",
+              "e.g 18/23/2022",
+              Icon(Icons.calendar_today),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            customFields(emailController, "Email", "email@gmail.com", null),
+            SizedBox(
+              height: 10.0,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Pasword",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
-            SizedBox(
-              height: 10.0,
-            ),
-            customFields(lastNameController,
-                "Last name", "Enter your Last name", null),
-            SizedBox(
-              height: 10.0,
-            ),
-            customFields(dobController,"Date Of birth", "e.g 18/23/2022",
-                Icon(Icons.calendar_today), ),
-            SizedBox(
-              height: 10.0,
-            ),
-            customFields(emailController,"Email", "email@gmail.com", null),
-            SizedBox(
-              height: 10.0,
-            ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Pasword",
-              style: TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-        TextFormField(
-          keyboardType: TextInputType.text,
-          controller: passwordController,
-          obscureText: !_passwordVisible,
-          //This will obscure text dynamically
+                SizedBox(
+                  height: 10.0,
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  controller: passwordController,
+                  obscureText: !_passwordVisible,
+                  //This will obscure text dynamically
 
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            fillColor: Color.fromRGBO(247, 247, 247, 1),
-            filled: true,
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.black, width: 2.0),
-              borderRadius: BorderRadius.circular(5.0),),
-            // Here is key idea
-            hintText: 'Enter your password',
-            suffixIcon: IconButton(
-              icon: Icon(
-                // Based on passwordVisible state choose the icon
-                _passwordVisible
-                    ? Icons.visibility
-                    : Icons.visibility_off,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                // Update the state i.e. toogle the state of passwordVisible variable
-                setState(() {
-                  _passwordVisible = !_passwordVisible;
-                });
-              },
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    fillColor: Color.fromRGBO(247, 247, 247, 1),
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(color: Colors.black, width: 2.0),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    // Here is key idea
+                    hintText: 'Enter your password',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        // Based on passwordVisible state choose the icon
+                        _passwordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        // Update the state i.e. toogle the state of passwordVisible variable
+                        setState(() {
+                          _passwordVisible = !_passwordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
-        ),
-        ),
-          ],
-        ),
             SizedBox(
               height: 10.0,
             ),
-            customFields(addressController,"Address", "Enter your Address",
+            customFields(addressController, "Address", "Enter your Address",
                 Icon(Icons.location_on_rounded)),
           ],
         ),
       ),
     );
   }
-  Widget customFields(controller,name, hint, icon) {
+
+  Widget customFields(controller, name, hint, icon) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

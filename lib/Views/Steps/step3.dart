@@ -1,22 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:guard_app/Features/Storage/storage_provider.dart';
 import 'package:guard_app/Views/Steps/step4.dart';
 import 'package:progress_stepper/progress_stepper.dart';
 
-class Step3 extends StatefulWidget {
+class Step3 extends ConsumerStatefulWidget {
   @override
-  _Step3State createState() => _Step3State();
+  ConsumerState<Step3> createState() => _Step3State();
 }
 
-class _Step3State extends State<Step3> {
+class _Step3State extends ConsumerState<Step3> {
   var summary;
   var work;
   final TextEditingController summaryController = new TextEditingController();
   final TextEditingController workController = new TextEditingController();
-
-
 
   int _chevronCounter = 0;
   int _customCounter = 0;
@@ -76,27 +76,10 @@ class _Step3State extends State<Step3> {
     summaryController.clear();
     workController.clear();
   }
-  // Adding Guard
-  CollectionReference guard = FirebaseFirestore.instance.collection('guard');
-  Future<void> guardDetails() {
-    return guard
-        .add({
-      'id': guard.doc().id,
-      'summary': summary,
-      'work': work,
-       })
-        .then((value) =>
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => Step4())))
-        .catchError((error) => Fluttertoast.showToast(
-        msg: "Failed to Add",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.SNACKBAR,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0));
-  }
+
+  
+  
+
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Color.fromRGBO(255, 255, 254, 1),
@@ -165,10 +148,13 @@ class _Step3State extends State<Step3> {
                     setState(() {
                       summary = summaryController.text;
                       work = workController.text;
-                      guardDetails();
-                      clearText();
-
                     });
+                    
+
+                    ref.read(storageProvider).addDetail(summary: summary, workExperience: work,context: context);
+                    
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: ((context) => Step4())));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
@@ -185,29 +171,7 @@ class _Step3State extends State<Step3> {
                     ),
                   ),
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     OutlinedButton(
-                //       onPressed: _decrementCustomStepper,
-                //       child: const Text(
-                //         '-1',
-                //         style: TextStyle(
-                //           color: Colors.red,
-                //         ),
-                //       ),
-                //     ),
-                //     OutlinedButton(
-                //       onPressed: _incrementCustomStepper,
-                //       child: const Text(
-                //         '+1',
-                //         style: TextStyle(
-                //           color: Colors.green,
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
+              
               ],
             ),
           ),
@@ -233,26 +197,25 @@ class _Step3State extends State<Step3> {
             SizedBox(
               height: 10.0,
             ),
-            customFields(summaryController,"Personal Summary*", "Add ID Front", null),
+            customFields(summaryController, "Personal Summary*",
+                "Add about yourSelf", null),
             SizedBox(
               height: 10.0,
             ),
 
-            customFields(workController,"Previous Work*", "Add ID Back", null),
+            customFields(workController, "Previous Work*",
+                "Add about your work Experince ", null),
             SizedBox(
               height: 10.0,
             ),
 
-            // customFields("Password", "Enter your password",Icon(Icons.visibility)),
-            // SizedBox(height: 10.0,),
-            // customFields("Password", "Enter your Address",Icon(Icons.location_on_rounded)),
           ],
         ),
       ),
     );
   }
 
-  Widget customFields(controller,name, hint, icon) {
+  Widget customFields(controller, name, hint, icon) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

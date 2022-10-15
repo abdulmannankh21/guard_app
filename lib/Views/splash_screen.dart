@@ -50,10 +50,10 @@ class _SplashScreenState extends State<SplashScreen> {
                     onTap: () {
                       Future.delayed(
                           const Duration(
-                            seconds: 3,
+                            seconds: 2,
                           ),
                               () {});
-                      if (FirebaseAuth.instance.currentUser != null) {
+                      if (FirebaseAuth.instance.currentUser!=null) {
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) => const MainScreen()));
                       } else {
