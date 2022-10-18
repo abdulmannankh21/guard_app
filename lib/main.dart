@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:guard_app/Views/splash_screen.dart';
+import 'package:guard_app/Views/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:guard_app/constants.dart';
 import 'package:guard_app/firebase_options.dart';
 import 'package:provider/provider.dart';
-import 'Views/profile.dart';
+import 'Views/widgets/profile.dart';
+import 'dart:math';
 
+class Palette {
+  static const Color primary = Color.fromARGB(255, 0, 0, 0);
+}
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -25,6 +31,40 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
+
+  int tintValue(int value, double factor) =>
+    max(0, min((value + ((255 - value) * factor)).round(), 255));
+
+Color tintColor(Color color, double factor) => Color.fromRGBO(
+    tintValue(color.red, factor),
+    tintValue(color.green, factor),
+    tintValue(color.blue, factor),
+    1);
+
+int shadeValue(int value, double factor) =>
+    max(0, min(value - (value * factor).round(), 255));
+
+Color shadeColor(Color color, double factor) => Color.fromRGBO(
+    shadeValue(color.red, factor),
+    shadeValue(color.green, factor),
+    shadeValue(color.blue, factor),
+    1);
+
+  
+MaterialColor generateMaterialColor(Color color) {
+  return MaterialColor(color.value, {
+    50: tintColor(color, 0.9),
+    100: tintColor(color, 0.8),
+    200: tintColor(color, 0.6),
+    300: tintColor(color, 0.4),
+    400: tintColor(color, 0.2),
+    500: color,
+    600: shadeColor(color, 0.1),
+    700: shadeColor(color, 0.2),
+    800: shadeColor(color, 0.3),
+    900: shadeColor(color, 0.4),
+  });
+}
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,9 +72,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
 
-        primarySwatch: Colors.blue,
+        primarySwatch: generateMaterialColor(Palette.primary),
       ),
       home: SplashScreen(),
+      builder: EasyLoading.init(),
     );
   }
 }

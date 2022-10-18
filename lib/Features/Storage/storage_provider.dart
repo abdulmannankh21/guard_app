@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:guard_app/Views/Steps/step2.dart';
 import 'package:guard_app/Views/Steps/step3.dart';
 import 'package:guard_app/Views/Steps/step4.dart';
@@ -46,6 +46,43 @@ class StorageMethods {
     return downloadUrl;
   }
 
+  Future<void> updateUserData(
+      {required String firstName,
+      required String secondName,
+      required String dateOfBirth,
+      required String address,
+      required String work,
+      required String adress,
+      required  String profileImageUrl,
+      required String summary,
+
+      }) async {
+    
+    await firestore
+        .collection('Guard')
+        .doc(auth.currentUser?.uid)
+        .collection('Basic')
+        .doc('info')
+        .update(
+      {
+        'firstName': firstName,
+        'secondName': secondName,
+        'dateOfBirth': dateOfBirth,
+        'address': address,
+        'profilePicUrl':profileImageUrl,
+        'summary': summary, 
+        'workExperience': work
+
+      },
+    ).then((value) {
+      EasyLoading.showSuccess("Data added successfully");
+    
+    }).catchError((error) {
+      EasyLoading.showError("Failed to update try again");
+    });
+  }
+
+
   Future<void> saveUser(
       {required String firstName,
       required String secondName,
@@ -57,7 +94,8 @@ class StorageMethods {
     firestore
         .collection('Guard')
         .doc(auth.currentUser?.uid)
-        .collection('jobs').doc();
+        .collection('jobs')
+        .doc();
     await firestore
         .collection('Guard')
         .doc(auth.currentUser?.uid)
@@ -70,23 +108,18 @@ class StorageMethods {
         'dateOfBirth': dateOfBirth,
         'email': email,
         'password': password,
-        'address': address
+        'address': address,
+        
       },
     ).then((value) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(customSnackBar(content: "Data aded succesfully"));
+      EasyLoading.showSuccess("Data added successfully");
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Step2()),
       );
-    }).catchError((error) => Fluttertoast.showToast(
-            msg: "Failed to Add",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0));
+    }).catchError((error) {
+      EasyLoading.showError(error.toString());
+    });
   }
 
   Future<void> saveImages(
@@ -108,22 +141,14 @@ class StorageMethods {
       'licenseFrotUrl': licenseFrotUrl,
       'licenseBackUrl': licenseBackUrl
     }, SetOptions(merge: true)).then((value) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(customSnackBar(content: "Data aded succesfully"));
+      EasyLoading.showSuccess("Pictures Uploaded Successfully");
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Step3()),
       );
-    }).catchError((error) => Fluttertoast.showToast(
-            msg: "Failed to Add",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.SNACKBAR,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0));
-    ;
-    ;
+    }).catchError((error) {
+      EasyLoading.showError(error.toString());
+    });
   }
 
   Future<void> addDetail(
@@ -131,6 +156,25 @@ class StorageMethods {
       required String workExperience,
       required BuildContext context}) async {
     try {
+      firestore
+          .collection('Guard')
+          .doc(auth.currentUser?.uid)
+          .set({'verified': false}, SetOptions(merge: true));
+
+      await firestore
+          .collection('Guard')
+          .doc(auth.currentUser?.uid)
+          .collection('Basic')
+          .doc('Jobs')
+          .set({});
+
+      await firestore
+          .collection('Guard')
+          .doc(auth.currentUser?.uid)
+          .collection('Basic')
+          .doc('Earning')
+          .set({"totalEarning": 0.0});
+
       await firestore
           .collection('Guard')
           .doc(auth.currentUser?.uid)
@@ -138,16 +182,14 @@ class StorageMethods {
           .doc('info')
           .set({'summary': summary, 'workExperience': workExperience},
               SetOptions(merge: true)).then((value) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(customSnackBar(content: "Data aded succesfully"));
+        EasyLoading.showSuccess("Data Added Succesfully");
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Step4()),
         );
       });
     } catch (err) {
-      // ignore: avoid_print
-      print(err);
+      EasyLoading.showError("Opps!!");
     }
   }
 }

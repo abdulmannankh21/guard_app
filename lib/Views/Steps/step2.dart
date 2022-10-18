@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:guard_app/Features/Storage/storage_provider.dart';
 import 'package:guard_app/Views/Steps/step3.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,6 +20,7 @@ class _Step2State extends ConsumerState<Step2> {
   String pickedImagePath = '';
   List<bool> picked = [false, false, false, false, false];
   List<String> uploadImagesUrl = ["", "", "", "", ""];
+  bool disabled = true;
 
   List<String> paths = ["", "", "", "", "", ""];
   var icon = [
@@ -84,7 +86,6 @@ class _Step2State extends ConsumerState<Step2> {
                     Image.asset('images/header.png'),
                   ],
                 ),
-
                 const SizedBox(
                   height: 10,
                 ),
@@ -121,26 +122,30 @@ class _Step2State extends ConsumerState<Step2> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.05,
                 ),
-
                 InkWell(
                   onTap: () {
-                    //_incrementChevronStepper();
+                    if (!disabled) {
+                      ref.read(storageProvider).saveImages(
+                          context: context,
+                          idFrontURl: uploadImagesUrl[1],
+                          profilePicUrl: uploadImagesUrl[0],
+                          idBackUrl: uploadImagesUrl[2],
+                          licenseFrotUrl: uploadImagesUrl[3],
+                          licenseBackUrl: uploadImagesUrl[4]);
 
-                    ref.read(storageProvider).saveImages(
-                        context: context,
-                        idFrontURl: uploadImagesUrl[1],
-                        profilePicUrl: uploadImagesUrl[0],
-                        idBackUrl: uploadImagesUrl[2],
-                        licenseFrotUrl: uploadImagesUrl[3],
-                        licenseBackUrl: uploadImagesUrl[4]);
-
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Step3()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Step3()));
+                    } else {
+                      EasyLoading.showInfo("All the images must be Uploaded");
+                    }
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.07,
-                    decoration: BoxDecoration(color: Colors.black),
+                    decoration: BoxDecoration(
+                        color: disabled
+                            ? Color.fromARGB(255, 79, 79, 79)
+                            : Colors.black),
                     child: Center(
                       child: Text(
                         "Next",
@@ -152,29 +157,6 @@ class _Step2State extends ConsumerState<Step2> {
                     ),
                   ),
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     OutlinedButton(
-                //       onPressed: _decrementCustomStepper,
-                //       child: const Text(
-                //         '-1',
-                //         style: TextStyle(
-                //           color: Colors.red,
-                //         ),
-                //       ),
-                //     ),
-                //     OutlinedButton(
-                //       onPressed: _incrementCustomStepper,
-                //       child: const Text(
-                //         '+1',
-                //         style: TextStyle(
-                //           color: Colors.green,
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
               ],
             ),
           ),
@@ -252,7 +234,11 @@ class _Step2State extends ConsumerState<Step2> {
           dashPattern: [4, 4],
           child: GestureDetector(
             onTap: () {
-              takePicture(hint, ImageSource.camera, index);
+              try {
+                takePicture(hint, ImageSource.camera, index);
+              } catch (e) {
+                EasyLoading.showError("Error occured while picking image");
+              }
             },
             child: TextFormField(
               enabled: false,
@@ -310,7 +296,7 @@ class _Step2State extends ConsumerState<Step2> {
 
   Future<void>? takePicture(childName, ImageSource source, int index) async {
     final ImagePicker picker = ImagePicker();
-    
+
     final XFile? image = await picker.pickImage(
         source: source,
         imageQuality: 70, // <- Reduce Image quality
@@ -319,15 +305,20 @@ class _Step2State extends ConsumerState<Step2> {
     if (image != null) {
       pickedImage = io.File(image.path);
       pickedImagePath = pickedImage!.path;
-      var url = await ref.read(storageProvider).uploadImageToStorage(childName, pickedImage!);
+      var url = await ref
+          .read(storageProvider)
+          .uploadImageToStorage(childName, pickedImage!);
 
       setState(() {
         paths[index] = pickedImagePath;
         uploadImagesUrl[index] = url;
         picked[index] = true;
+        if (picked[0] && picked[1] && picked[2] && picked[3] && picked[4]) {
+          {
+            disabled = false;
+          }
+        }
       });
-    } else {
-      
-    }
+    } else {}
   }
 }

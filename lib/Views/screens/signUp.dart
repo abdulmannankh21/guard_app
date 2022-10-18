@@ -4,19 +4,21 @@ import 'package:country_pickers/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:guard_app/Features/Storage/data_provider.dart';
 
 import 'package:guard_app/Features/authentiction/auth_provider.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  LoginScreen({Key? key}) : super(key: key);
+class SignUpScreen extends ConsumerStatefulWidget {
+ const SignUpScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<LoginScreen> createState() => _ScreenOneState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _ScreenOneState extends ConsumerState<LoginScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final TextEditingController phoneController = TextEditingController();
   bool tick = false;
   String userEmail = "";
@@ -62,7 +64,7 @@ class _ScreenOneState extends ConsumerState<LoginScreen> {
               isDense: false,
               itemBuilder: (Country country) =>
                   _buildDropdownItem(country, dropdownItemWidth),
-              initialValue: 'AR',
+              initialValue: 'GB',
               priorityList: hasPriorityList
                   ? [
                       CountryPickerUtils.getCountryByIsoCode('GB'),
@@ -121,7 +123,7 @@ class _ScreenOneState extends ConsumerState<LoginScreen> {
         child: Column(
           children: [
             Text(
-              "Welcome",
+              "SignUP",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 25,
@@ -168,7 +170,7 @@ class _ScreenOneState extends ConsumerState<LoginScreen> {
                     ? GestureDetector(
                         onTap: () {
                           setState(() {
-                            tick = false;
+                            tick = !tick;
                           });
                         },
                         child: Icon(
@@ -184,11 +186,11 @@ class _ScreenOneState extends ConsumerState<LoginScreen> {
                         },
                         child: Icon(
                           Icons.check_box_outline_blank,
-                          size: 30,
+                          size: 25,
                         ),
                       ),
                 Text(
-                  "I agree to Grab a Guard's",
+                  "I agree to Grab Guard's",
                   style: TextStyle(fontSize: 11, color: Colors.black45),
                 ),
                 Text(
@@ -203,16 +205,22 @@ class _ScreenOneState extends ConsumerState<LoginScreen> {
             InkWell(
               onTap: () {
                 setState(() {
+                  print(tick);
                   if (tick == true) {
                     ref.read(authControllerProvider).signInWithPhone(
-                        context,'+'+ countryCode + phoneController.text);
+                        context, '+' + countryCode + phoneController.text);
+                    
+                  } else {
+                    EasyLoading.showInfo("Please accept our terms to continue");
                   }
                 });
               },
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.9,
                 height: MediaQuery.of(context).size.height * 0.07,
-                decoration: BoxDecoration(color: Colors.black),
+                decoration: BoxDecoration(
+                    color:
+                        tick ? Colors.black : Color.fromARGB(255, 95, 94, 94)),
                 child: Center(
                   child: Text(
                     "Continue",
@@ -238,56 +246,17 @@ class _ScreenOneState extends ConsumerState<LoginScreen> {
               height: 10,
             ),
 
-            //Facebook Button
-            // GestureDetector(
-            //   onTap: () {
-            //     signInWithFacebook();
-            //    setState((){
-            //
-            //    });
-            //   },
-            //   child: Container(
-            //     width: MediaQuery.of(context).size.width * 0.9,
-            //     height: MediaQuery.of(context).size.height * 0.07,
-            //     decoration: BoxDecoration(
-            //       color: Colors.white,
-            //       border: Border.all(color: Colors.black12),
-            //     ),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         Padding(
-            //           padding: const EdgeInsets.only(right: 10),
-            //           child: Container(
-            //             width: 30,
-            //             height: 30,
-            //             child: ClipRRect(
-            //               child: Image.asset(
-            //                 "images/facebook.png",
-            //                 fit: BoxFit.cover,
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //         Text(
-            //           "Facebook",
-            //           style: TextStyle(color: Colors.black, fontSize: 18),
-            //         )
-            //       ],
-            //     ),
-            //   ),
-            // ),
+            
             SizedBox(
               height: 10,
             ),
 
-            //Gmail Button
+          
 
             GestureDetector(
               onTap: () {
                 setState(() async {
                   ref.read(authControllerProvider).signInWithGoogle(context);
-                 
                 });
               },
               child: Container(
@@ -327,39 +296,5 @@ class _ScreenOneState extends ConsumerState<LoginScreen> {
     );
   }
 
-  // Future<UserCredential> signInWithGoogle() async {
-  //   // Trigger the authentication flow
-  //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-  //   // Obtain the auth details from the request
-  //   final GoogleSignInAuthentication? googleAuth =
-  //       await googleUser?.authentication;
-
-  //   // Create a new credential
-  //   final credential = GoogleAuthProvider.credential(
-  //     accessToken: googleAuth?.accessToken,
-  //     idToken: googleAuth?.idToken,
-  //   );
-
-  //   // Once signed in, return the UserCredential
-  //   return await FirebaseAuth.instance.signInWithCredential(credential);
-  // }
-
-// Future<UserCredential> signInWithFacebook() async {
-//   // Trigger the sign-in flow
-//   final LoginResult loginResult = await FacebookAuth.instance.login(
-//       permissions: ['email', 'public_profile', 'user_birthday']
-//   );
-//
-//   // Create a credential from the access token
-//   final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
-//
-//   final userData = await FacebookAuth.instance.getUserData();
-//
-//   userEmail = userData['email'];
-//
-//   // Once signed in, return the UserCredential
-//   return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-// }
-
+  
 }

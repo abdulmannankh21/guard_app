@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:guard_app/Views/loginScreen.dart';
-import 'package:guard_app/Views/mainScreen.dart';
+import 'package:guard_app/Views/screens/mainScreen.dart';
 
-import '../constants.dart';
+import 'package:guard_app/Views/screens/signIn.dart';
+
+import '../../constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -52,13 +53,19 @@ class _SplashScreenState extends State<SplashScreen> {
                           const Duration(
                             seconds: 2,
                           ),
-                              () {});
-                      if (FirebaseAuth.instance.currentUser!=null) {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => const MainScreen()));
+                          () {});
+
+                      if (FirebaseAuth.instance.currentUser != null) {
+                        FirebaseAuth.instance.signOut();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MainScreen()));
                       } else {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) =>  LoginScreen()));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignInScreen()));
                       }
                     },
                     child: Padding(

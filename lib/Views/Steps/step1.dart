@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:guard_app/Features/Storage/storage_provider.dart';
+import 'package:guard_app/services/location_services.dart';
 import 'package:progress_stepper/progress_stepper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,13 +13,16 @@ class Step1 extends ConsumerStatefulWidget {
 }
 
 class _Step1State extends ConsumerState<Step1> {
-  var firstName;
-  var lastName;
-  var dob;
-  var email;
-  var address;
-  var password;
-  bool _passwordVisible = false;
+  LocationServices newLocation = LocationServices();
+
+  String firstName = "";
+  String lastName = "";
+  String dob = "";
+  String email = "";
+  String address = "";
+  String password = "";
+  String _passwordVisible = "";
+  bool disabled = true;
 
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
@@ -28,6 +34,7 @@ class _Step1State extends ConsumerState<Step1> {
   @override
   void initState() {
     super.initState();
+    newLocation.getLatLong();
   }
 
   @override
@@ -85,7 +92,6 @@ class _Step1State extends ConsumerState<Step1> {
                       Image.asset('images/header.png'),
                     ],
                   ),
-
                   const SizedBox(
                     height: 10,
                   ),
@@ -122,34 +128,50 @@ class _Step1State extends ConsumerState<Step1> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.05,
                   ),
-
                   InkWell(
                     onTap: () {
                       //_incrementChevronStepper();
-                      setState(() {
-                        firstName = firstNameController.text;
-                        lastName = lastNameController.text;
-                        dob = dobController.text;
-                        email = emailController.text;
-                        address = addressController.text;
-                        password = passwordController.text;
+                      if (lastNameController.text != "" &&
+                          firstNameController.text != "" &&
+                          dobController.text != "" &&
+                          addressController.text != "") {
+                        setState(() {
+                          disabled = false;
+                        });
+                      }
 
-                        clearText();
+                      print('diasbaled : $disabled');
+                      if (!disabled) {
+                        setState(() {
+                          firstName = firstNameController.text;
+                          lastName = lastNameController.text;
+                          dob = dobController.text;
+                          email = emailController.text;
+                          address = addressController.text;
+                          password = passwordController.text;
 
-                        ref.read(storageProvider).saveUser(
-                            context: context,
-                            firstName: firstName,
-                            secondName: lastName,
-                            dateOfBirth: dob,
-                            email: email,
-                            password: password,
-                            address: address);
-                      });
+                          clearText();
+
+                          ref.read(storageProvider).saveUser(
+                              context: context,
+                              firstName: firstName,
+                              secondName: lastName,
+                              dateOfBirth: dob,
+                              email: FirebaseAuth.instance.currentUser!.email!,
+                              password: password,
+                              address: address);
+                        });
+                      } else {
+                        EasyLoading.showInfo("Fill all the fields * ");
+                      }
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 0.07,
-                      decoration: BoxDecoration(color: Colors.black),
+                      decoration: BoxDecoration(
+                          color: disabled
+                              ? Color.fromARGB(255, 54, 54, 54)
+                              : Colors.black),
                       child: Center(
                         child: Text(
                           "Next",
@@ -161,29 +183,6 @@ class _Step1State extends ConsumerState<Step1> {
                       ),
                     ),
                   ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     OutlinedButton(
-                  //       onPressed: _decrementCustomStepper,
-                  //       child: const Text(
-                  //         '-1',
-                  //         style: TextStyle(
-                  //           color: Colors.red,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     OutlinedButton(
-                  //       onPressed: _incrementCustomStepper,
-                  //       child: const Text(
-                  //         '+1',
-                  //         style: TextStyle(
-                  //           color: Colors.green,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                 ],
               ),
             ),
@@ -210,85 +209,28 @@ class _Step1State extends ConsumerState<Step1> {
             ),
             customFields(
               firstNameController,
-              "First name",
+              "First name *",
               "Enter your first name",
               null,
             ),
             SizedBox(
               height: 10.0,
             ),
-            customFields(
-                lastNameController, "Last name", "Enter your Last name", null),
+            customFields(lastNameController, "Last name * ",
+                "Enter your Last name", null),
             SizedBox(
               height: 10.0,
             ),
             customFields(
               dobController,
-              "Date Of birth",
+              "Date Of birth *",
               "e.g 18/23/2022",
               Icon(Icons.calendar_today),
             ),
             SizedBox(
               height: 10.0,
             ),
-            customFields(emailController, "Email", "email@gmail.com", null),
-            SizedBox(
-              height: 10.0,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Pasword",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.text,
-                  controller: passwordController,
-                  obscureText: !_passwordVisible,
-                  //This will obscure text dynamically
-
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    fillColor: Color.fromRGBO(247, 247, 247, 1),
-                    filled: true,
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Colors.black, width: 2.0),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    // Here is key idea
-                    hintText: 'Enter your password',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        // Based on passwordVisible state choose the icon
-                        _passwordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Colors.black,
-                      ),
-                      onPressed: () {
-                        // Update the state i.e. toogle the state of passwordVisible variable
-                        setState(() {
-                          _passwordVisible = !_passwordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            customFields(addressController, "Address", "Enter your Address",
+            customFields(addressController, "Address *", "Enter your Address",
                 Icon(Icons.location_on_rounded)),
           ],
         ),
@@ -310,6 +252,16 @@ class _Step1State extends ConsumerState<Step1> {
           height: 10.0,
         ),
         TextFormField(
+          onChanged: (value) {
+            if (lastNameController.text != "" &&
+                firstNameController.text != "" &&
+                dobController.text != "" &&
+                addressController.text != "") {
+              setState(() {
+                disabled = false;
+              });
+            }
+          },
           textInputAction: TextInputAction.next,
           controller: controller,
           decoration: InputDecoration(

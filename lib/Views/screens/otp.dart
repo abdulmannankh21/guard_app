@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:guard_app/Features/authentiction/auth_provider.dart';
 import 'package:guard_app/Views/Steps/step1.dart';
-import 'package:guard_app/Views/password.dart';
+import 'package:guard_app/Views/screens/signUp.dart';
+import 'package:guard_app/Views/screens/password.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class PinCodeVerificationScreen extends ConsumerStatefulWidget {
@@ -45,7 +46,7 @@ class _PinCodeVerificationScreenState
     super.dispose();
   }
 
-    void verifyOTP(WidgetRef ref, BuildContext context, String userOTP) {
+  void verifyOTP(WidgetRef ref, BuildContext context, String userOTP) {
     ref.read(authControllerProvider).verifyOTP(
           context,
           verificationID,
@@ -53,14 +54,6 @@ class _PinCodeVerificationScreenState
         );
   }
   // snackBar Widget
-  snackBar(String? message) {
-    return ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message!),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +136,6 @@ class _PinCodeVerificationScreenState
                           blurRadius: 10,
                         )
                       ],
-                      
                       onChanged: (value) {
                         debugPrint(value);
                         setState(() {
@@ -175,13 +167,18 @@ class _PinCodeVerificationScreenState
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    "Didn't receive the code? ",
+                    "want to change phone Number? ",
                     style: TextStyle(color: Colors.black54, fontSize: 15),
                   ),
                   TextButton(
-                    onPressed: () => snackBar("OTP resend!!"),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: ((context) => SignUpScreen())));
+                    },
                     child: const Text(
-                      "RESEND",
+                      "Change",
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -196,15 +193,9 @@ class _PinCodeVerificationScreenState
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    
-                      
-                        verifyOTP(ref, context, otpController.text);
-                      
-                      
-                    
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Step1()));
-                    snackBar("OTP Verified!!");
+                    verifyOTP(ref, context, otpController.text);
+
+                  
                   });
                 },
                 child: Container(
@@ -228,6 +219,4 @@ class _PinCodeVerificationScreenState
       ),
     );
   }
-
- 
 }
