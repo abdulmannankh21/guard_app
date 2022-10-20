@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -15,6 +16,15 @@ class Step1 extends ConsumerStatefulWidget {
 class _Step1State extends ConsumerState<Step1> {
   LocationServices newLocation = LocationServices();
 
+  void getToken() async {
+  await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        messageToken = token;
+      });
+    });
+  }
+
+  String? messageToken = '';
   String firstName = "";
   String lastName = "";
   String dob = "";
@@ -153,6 +163,7 @@ class _Step1State extends ConsumerState<Step1> {
                           clearText();
 
                           ref.read(storageProvider).saveUser(
+                             token: messageToken??"",
                               context: context,
                               firstName: firstName,
                               secondName: lastName,

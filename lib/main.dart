@@ -1,14 +1,20 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guard_app/Features/notification/local_notification_service.dart';
 import 'package:guard_app/Views/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:guard_app/constants.dart';
+
 import 'package:guard_app/firebase_options.dart';
-import 'package:provider/provider.dart';
-import 'Views/widgets/profile.dart';
+
 import 'dart:math';
+
+Future<void> backgroundHandler(RemoteMessage message) async {
+  	
+	}
+
 
 class Palette {
   static const Color primary = Color.fromARGB(255, 0, 0, 0);
@@ -18,12 +24,9 @@ Future main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
-  await FacebookAuth.instance.webInitialize(
-    appId: "656330185839916",
-    cookie: true,
-    xfbml: true,
-    version: "v13.0",
-  );
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+    
+   LocalNotificationService.initialize();
   runApp(ProviderScope(child:  MyApp()));
 }
 
@@ -67,6 +70,7 @@ MaterialColor generateMaterialColor(Color color) {
 }
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,

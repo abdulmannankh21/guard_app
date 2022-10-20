@@ -90,7 +90,7 @@ class AuthRespository {
               "or is already linked to a Firebase User.";
           break;
         default:
-          errorText = "Unknown error.";
+          errorText = "Unknown error! Try Again";
       }
 
       EasyLoading.showError(errorText);

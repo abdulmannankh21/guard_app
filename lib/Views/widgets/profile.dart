@@ -25,8 +25,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     var value = await ref.read(dataProvier).getCurrentUserData();
 
     setState(() {
+      if(user?.firstName==null)
+       loading = false;
       user = value;
-      loading = false;
+     
     });
   }
 

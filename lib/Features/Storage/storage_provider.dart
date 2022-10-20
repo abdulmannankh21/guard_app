@@ -84,7 +84,8 @@ class StorageMethods {
 
 
   Future<void> saveUser(
-      {required String firstName,
+      {required String token,
+        required String firstName,
       required String secondName,
       required String dateOfBirth,
       required String email,
@@ -109,6 +110,7 @@ class StorageMethods {
         'email': email,
         'password': password,
         'address': address,
+        'token':token
         
       },
     ).then((value) {
@@ -166,7 +168,7 @@ class StorageMethods {
           .doc(auth.currentUser?.uid)
           .collection('Basic')
           .doc('Jobs')
-          .set({});
+          .set({"job":""});
 
       await firestore
           .collection('Guard')
@@ -189,7 +191,7 @@ class StorageMethods {
         );
       });
     } catch (err) {
-      EasyLoading.showError("Opps!!");
+    
     }
   }
 }

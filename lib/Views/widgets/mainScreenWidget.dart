@@ -1,5 +1,7 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:guard_app/Features/Storage/data_provider.dart';
+import 'package:guard_app/Models/job_model.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:guard_app/Views/widgets/google_map.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,10 +18,28 @@ class _MainScreenWidgetState extends ConsumerState<MainScreenWidget> {
   FirebaseAuth auth = FirebaseAuth.instance;
   bool isOnline = true;
 
+  List<JobModel> jobs = [];
+  bool loading = true;
+  bool isNoJobs = false;
+  Future<void> getJobs() async {
+    var data = await ref.read(dataProvier).getJobs();
+
+    setState(() {
+      if (data.isEmpty) {
+        isNoJobs = true;
+      }
+      jobs = data;
+      loading = false;
+    });
+  }
+
+
   @override
   void initState() {
     // TODO: implement initState
     ref.read(dataProvier).getCurrentUserData();
+    getJobs();
+    
   }
 
   @override
@@ -104,66 +124,22 @@ class _MainScreenWidgetState extends ConsumerState<MainScreenWidget> {
                       SizedBox(
                         height: size.height * 0.02,
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: const Color.fromRGBO(51, 72, 159, 1),
-                            borderRadius: BorderRadius.circular(10.0)),
-                        height: size.height * 0.08,
+                      SizedBox(
+                        height: size.height * .14,
                         width: size.width,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Steve Smith - key holding",
-                                    style: TextStyle(
-                                        fontSize: size.width * 0.04,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Text(
-                                    "Monday, 16 June | 10:00am - 12:00am",
-                                    style: TextStyle(
-                                        fontSize: size.width * 0.03,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Total",
-                                    style: TextStyle(
-                                        fontSize: size.width * 0.04,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                  const SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Text(
-                                    "123",
-                                    style: TextStyle(
-                                        fontSize: size.width * 0.03,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                        child: ListView.builder(
+                            itemCount: jobs.length,
+                            itemBuilder: ((context, index) => listItem(
+                                jobs[index].hirerName +
+                                    " - " +
+                                    jobs[index].description,
+                                jobs[index].weekDay +
+                                    " | " +
+                                    jobs[index].date +
+                                    " | " +
+                                    jobs[index].duration,
+                                jobs[index].fee,
+                                size))),
                       )
                     ],
                   ),
@@ -173,6 +149,70 @@ class _MainScreenWidgetState extends ConsumerState<MainScreenWidget> {
           ),
         ),
       ]),
+    );
+  }
+
+  Widget listItem(String header, String duration, double fee, var size) {
+    return Container(
+      decoration: BoxDecoration(
+          color: const Color.fromRGBO(51, 72, 159, 1),
+          borderRadius: BorderRadius.circular(10.0)),
+      height: size.height * 0.08,
+      width: size.width,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  header,
+                  style: TextStyle(
+                      fontSize: size.width * 0.04,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  duration,
+                  style: TextStyle(
+                      fontSize: size.width * 0.03,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w300),
+                ),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Total",
+                  style: TextStyle(
+                      fontSize: size.width * 0.04,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  fee.toString(),
+                  style: TextStyle(
+                      fontSize: size.width * 0.03,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w300),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -186,7 +186,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                  TextButton(onPressed: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ResetPasswordScreen())),
+                  TextButton(onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResetPasswordScreen())),
                   child: const Text("forgot password?",style: TextStyle(fontWeight: FontWeight.bold),),
                   )],),),
                   Padding(padding: const EdgeInsets.all(1),child: 
