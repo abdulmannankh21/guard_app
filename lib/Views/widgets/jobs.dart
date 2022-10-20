@@ -1,13 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guard_app/Features/Storage/data_provider.dart';
+import 'package:guard_app/Models/job_model.dart';
 
-class JobsScreen extends StatefulWidget {
+class JobsScreen extends ConsumerStatefulWidget {
   const JobsScreen({Key? key}) : super(key: key);
 
   @override
-  State<JobsScreen> createState() => _JobsScreenState();
+  ConsumerState<JobsScreen> createState() => _JobsScreenState();
 }
 
-class _JobsScreenState extends State<JobsScreen> {
+class _JobsScreenState extends ConsumerState<JobsScreen> {
+  List<JobModel> jobs = [];
+  bool loading = true;
+  bool isNoJobs = false;
+  Future<void> getBookings() async {
+    var data = await ref.read(dataProvier).getJobs();
+
+    setState(() {
+      if (data.isEmpty) {
+        isNoJobs = true;
+      }
+      jobs = data;
+      loading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getBookings();
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -28,9 +54,9 @@ class _JobsScreenState extends State<JobsScreen> {
         Container(
           height: size.height * 0.7,
           width: size.width,
-          child: ListView.builder(
-            itemCount: 6,
-            itemBuilder: (context, i) {
+          child:  loading?Center(child: isNoJobs?Text("No jobs found "): CircularProgressIndicator(),): ListView.builder(
+            itemCount: jobs.length,
+            itemBuilder: (context, index) {
               return Container(
                 margin: EdgeInsets.only(
                     left: size.width * 0.05,
@@ -50,7 +76,7 @@ class _JobsScreenState extends State<JobsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Monday, 7 March",
+                      "${jobs[index].weekDay} | ${jobs[index].date} ",
                       style: TextStyle(
                           fontSize: size.width * 0.04,
                           color: Colors.black,
@@ -67,7 +93,7 @@ class _JobsScreenState extends State<JobsScreen> {
                           size: 20.0,
                         ),
                         Text(
-                          "10:00am-12:00am",
+                          jobs[index].duration,
                           style: TextStyle(
                               fontSize: size.width * 0.04,
                               color: Colors.grey,

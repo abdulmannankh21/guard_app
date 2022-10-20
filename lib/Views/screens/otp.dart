@@ -111,8 +111,8 @@ class _PinCodeVerificationScreenState
                       blinkWhenObscuring: true,
                       animationType: AnimationType.fade,
                       validator: (v) {
-                        if (v!.length < 3) {
-                          return "I'm from validator";
+                        if (v!.length < 6) {
+                          return "it should be of 6 character long";
                         } else {
                           return null;
                         }

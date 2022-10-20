@@ -12,6 +12,52 @@ class DataProvider {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
 
+   
+  
+  Future<List<JobModel>> getActiveJobs(String id) async {
+    List<JobModel> _jobList = [];
+    var data = await firestore
+        .collection('Guard')
+        .doc(id)
+        .collection('jobs').where('pending',isEqualTo: true)
+        .get();
+
+    var iter = data.docs.iterator;
+
+    while (iter.moveNext()) {
+      var booking = iter.current.data();
+      var item = JobModel.fromMap(booking);
+
+      _jobList.add(item);
+
+      //_jobList.add(job);
+    }
+    return _jobList;
+  }
+
+  Future<List<JobModel>> getJobs() async {
+    List<JobModel> _jobList = [];
+    var data = await firestore
+        .collection('Guard')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('jobs')
+        .get();
+
+    var iter = data.docs.iterator;
+
+    while (iter.moveNext()) {
+      var booking = iter.current.data();
+      var item = JobModel.fromMap(booking);
+
+      _jobList.add(item);
+
+      //_jobList.add(job);
+    }
+    return _jobList;
+  }
+
+ 
+
   static UserModel currentUser = UserModel(
       firstName: "",
       profilePicUrl: "",
@@ -32,17 +78,7 @@ class DataProvider {
     return 0.0;
   }
 
-  Future<JobModel?> getJobs() async {
-    var userData;
-    userData = firestore
-        .collection('Guard')
-        .doc(auth.currentUser?.uid)
-        .collection('Basic')
-        .doc('Jobs')
-        .get();
-
-    return userData;
-  }
+ 
 
   Future<UserModel?> getCurrentUserData() async {
     var userData = await firestore

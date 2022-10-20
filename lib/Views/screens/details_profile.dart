@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guard_app/Features/Storage/data_provider.dart';
 import 'package:guard_app/Models/user_model.dart';
-import '../widgets/jobs.dart';
-import 'mainScreen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DetailsScreen extends ConsumerStatefulWidget {

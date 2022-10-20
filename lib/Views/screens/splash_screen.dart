@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:guard_app/Views/screens/mainScreen.dart';
 
@@ -14,6 +15,41 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+       
+     FirebaseMessaging.instance.getInitialMessage().then(
+      (message) {
+        print("FirebaseMessaging.instance.getInitialMessage");
+        if (message != null) {
+          
+        }
+      },
+    );
+
+     FirebaseMessaging.onMessage.listen(
+      (message) {
+        
+        if (message.notification != null) {
+          
+
+        }
+      },
+    );
+    
+
+    FirebaseMessaging.onMessageOpenedApp.listen(
+      (message) {
+        
+        if (message.notification != null) {
+          
+        }
+      },
+    );
+  
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -56,7 +92,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           () {});
 
                       if (FirebaseAuth.instance.currentUser != null) {
-                        FirebaseAuth.instance.signOut();
+                    
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
