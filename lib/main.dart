@@ -11,6 +11,8 @@ import 'package:guard_app/firebase_options.dart';
 
 import 'dart:math';
 
+
+
 Future<void> backgroundHandler(RemoteMessage message) async {
   	
 	}

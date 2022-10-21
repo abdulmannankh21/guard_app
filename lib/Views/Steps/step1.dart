@@ -33,7 +33,9 @@ class _Step1State extends ConsumerState<Step1> {
   String password = "";
   String _passwordVisible = "";
   bool disabled = true;
+  String cityName="";
 
+  final TextEditingController cityController = new TextEditingController();
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
   final TextEditingController dobController = new TextEditingController();
@@ -163,6 +165,7 @@ class _Step1State extends ConsumerState<Step1> {
                           clearText();
 
                           ref.read(storageProvider).saveUser(
+                            city :cityController.text,
                              token: messageToken??"",
                               context: context,
                               firstName: firstName,
@@ -222,6 +225,12 @@ class _Step1State extends ConsumerState<Step1> {
               firstNameController,
               "First name *",
               "Enter your first name",
+              null,
+            ),
+             customFields(
+              cityController,
+              "City name*",
+              "Enter your city name in lower case ",
               null,
             ),
             SizedBox(

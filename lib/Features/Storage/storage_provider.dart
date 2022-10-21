@@ -84,7 +84,8 @@ class StorageMethods {
 
 
   Future<void> saveUser(
-      {required String token,
+      {required String city,
+        required String token,
         required String firstName,
       required String secondName,
       required String dateOfBirth,
@@ -103,7 +104,7 @@ class StorageMethods {
         .collection('Basic')
         .doc('info')
         .set(
-      {
+      { 'city':city,
         'firstName': firstName,
         'secondName': secondName,
         'dateOfBirth': dateOfBirth,
