@@ -13,10 +13,10 @@ final authrepoProvider = Provider((ref) => AuthRespository(
     auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance));
 
 class AuthRespository {
+  AuthRespository({required this.auth, required this.firestore});
+
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  AuthRespository({required this.auth, required this.firestore});
 
   void updateEmail(String email) async {
     await auth.currentUser!.updateEmail(email).then((value) {
@@ -103,9 +103,7 @@ class AuthRespository {
     await auth.verifyPhoneNumber(
       codeAutoRetrievalTimeout: ((verificationId) {
         EasyLoading.showInfo("code auto retrival time-out");
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: ((context) =>
-                PinCodeVerificationScreen(verificationId: verificationId))));
+        Navigator.of(context).popAndPushNamed(PinCodeVerificationScreen.routeName,arguments: verificationId);
       }),
       verificationCompleted: (phoneAuthCredential) async {
         auth.signInWithCredential(phoneAuthCredential).then((value) {

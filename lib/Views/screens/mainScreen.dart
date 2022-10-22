@@ -17,9 +17,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
- 
-    int _selectedIndex = 0;
-
     static  List<Widget> _pages = <Widget>[
   MainScreenWidget(),
   EarningScreen(),
@@ -28,8 +25,7 @@ class _MainScreenState extends State<MainScreen> {
 
 ];
 
-
-
+    int _selectedIndex = 0;
 
      @override
   

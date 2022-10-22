@@ -13,9 +13,9 @@ final authControllerProvider = Provider((ref) {
 //future provider
 
 class AuthController {
-  late final AuthRespository authrepository;
-
   AuthController({required this.authrepository});
+
+  late final AuthRespository authrepository;
 
   void updatePassword({required String password}) {}
 

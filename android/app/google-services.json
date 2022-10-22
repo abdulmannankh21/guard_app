@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "918228134259",
+    "firebase_url": "https://guardproject-6cf2e-default-rtdb.firebaseio.com",
     "project_id": "guardproject-6cf2e",
     "storage_bucket": "guardproject-6cf2e.appspot.com"
   },
@@ -22,6 +23,14 @@
           }
         },
         {
+          "client_id": "918228134259-vk1heuke1i49ncvg4bpaua7ie0vj3qjh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.grab_guard",
+            "certificate_hash": "a3f6e71e5eb4773378a5a5bcf52cbbfb2a41b6b0"
+          }
+        },
+        {
           "client_id": "918228134259-95cb6stdm3m1krt6k5fd9psvvsa5jqsm.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +38,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyBoYbtmW8k6Mf1s1N6PTlggCZszvtwDMJ8"
+        },
+        {
+          "current_key": "AIzaSyAm8bqIfl00F-abG_L3PSGCz8wdVMEVAA4"
         }
       ],
       "services": {
@@ -37,6 +49,13 @@
             {
               "client_id": "918228134259-95cb6stdm3m1krt6k5fd9psvvsa5jqsm.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "918228134259-snn1cjfb8t9tsctcv67mjfag3ep0sd8g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.grabGuard"
+              }
             }
           ]
         }
@@ -50,6 +69,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "918228134259-8pm7a0nkp3gassdeg7uh8su8nkrn13ri.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.guard_app",
+            "certificate_hash": "a3f6e71e5eb4773378a5a5bcf52cbbfb2a41b6b0"
+          }
+        },
         {
           "client_id": "918228134259-cjipa7d2gppulpsup1ifg02pbktc1tnq.apps.googleusercontent.com",
           "client_type": 1,
@@ -66,6 +93,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyBoYbtmW8k6Mf1s1N6PTlggCZszvtwDMJ8"
+        },
+        {
+          "current_key": "AIzaSyAm8bqIfl00F-abG_L3PSGCz8wdVMEVAA4"
         }
       ],
       "services": {
@@ -74,6 +104,13 @@
             {
               "client_id": "918228134259-95cb6stdm3m1krt6k5fd9psvvsa5jqsm.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "918228134259-snn1cjfb8t9tsctcv67mjfag3ep0sd8g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.grabGuard"
+              }
             }
           ]
         }

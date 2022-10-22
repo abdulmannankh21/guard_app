@@ -15,20 +15,27 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
-  bool hidePassword = true;
-  XFile? _im;
-  UserModel? user;
-  bool loading = true;
-
-  var networkImage;
-  TextEditingController workController = TextEditingController();
-  TextEditingController summaryController = TextEditingController();
-  TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
   TextEditingController dateofBirthController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  bool hidePassword = true;
+  TextEditingController lastNameController = TextEditingController();
+  bool loading = true;
+  var networkImage;
   TextEditingController passwordController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
+  TextEditingController summaryController = TextEditingController();
+  UserModel? user;
+  TextEditingController workController = TextEditingController();
+
+  XFile? _im;
+
+  @override
+  void initState() {
+    super.initState();
+
+    setUserData();
+  }
 
   void setUserData() async {
     var newUser = await ref.read(dataProvier).getCurrentUserData();
@@ -46,13 +53,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       workController.text = '${user?.workExperience}';
       networkImage = '${user?.profilePicUrl}';
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    setUserData();
   }
 
   selectImageFromGallery() async {
@@ -74,6 +74,39 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       return await _file;
     }
     print('No Image Selected');
+  }
+
+  Widget customFields(controller, name, hint) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "$name",
+          style: TextStyle(fontSize: 14, color: Colors.black),
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        Container(
+          height: 6 * 24.0,
+          child: TextFormField(
+            controller: controller,
+            maxLines: 6,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: "$hint",
+              fillColor: Color.fromRGBO(247, 247, 247, 1),
+              filled: true,
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Colors.black, width: 2.0),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+            ),
+          ),
+        )
+      ],
+    );
   }
 
   @override
@@ -285,38 +318,5 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   ),
                 ),
               ));
-  }
-
-  Widget customFields(controller, name, hint) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "$name",
-          style: TextStyle(fontSize: 14, color: Colors.black),
-        ),
-        SizedBox(
-          height: 10.0,
-        ),
-        Container(
-          height: 6 * 24.0,
-          child: TextFormField(
-            controller: controller,
-            maxLines: 6,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: "$hint",
-              fillColor: Color.fromRGBO(247, 247, 247, 1),
-              filled: true,
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.black, width: 2.0),
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-            ),
-          ),
-        )
-      ],
-    );
   }
 }

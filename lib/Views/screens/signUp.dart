@@ -19,12 +19,13 @@ class SignUpScreen extends ConsumerStatefulWidget {
 }
 
 class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  String countryCode = "";
   final TextEditingController phoneController = TextEditingController();
   bool tick = false;
   String userEmail = "";
-  FirebaseAuth auth = FirebaseAuth.instance;
   String verificationID = "";
-  String countryCode = "";
+
   Widget _buildDropdownItem(Country country, double dropdownItemWidth) =>
       SizedBox(
         width: MediaQuery.of(context).size.width * 0.23,
@@ -295,6 +296,4 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       ),
     );
   }
-
-  
 }

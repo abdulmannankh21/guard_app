@@ -14,10 +14,10 @@ class UpdatePasswordScreen extends ConsumerStatefulWidget {
 }
 
 class _PasswordState extends ConsumerState<UpdatePasswordScreen> {
-  bool obsecureState = true;
-  TextEditingController password = TextEditingController();
   TextEditingController confirmPasword = TextEditingController();
   String email = "";
+  bool obsecureState = true;
+  TextEditingController password = TextEditingController();
 
   @override
   void initState() {

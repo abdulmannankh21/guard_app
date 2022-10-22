@@ -14,13 +14,21 @@ class MainScreenWidget extends ConsumerStatefulWidget {
 }
 
 class _MainScreenWidgetState extends ConsumerState<MainScreenWidget> {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  bool isNoJobs = false;
   bool isOnline = true;
-
   List<JobModel> jobs = [];
   bool loading = true;
-  bool isNoJobs = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    ref.read(dataProvier).getCurrentUserData();
+    getJobs();
+    
+  }
+
   Future<void> getJobs() async {
     var data = await ref.read(dataProvier).getJobs();
 
@@ -31,125 +39,6 @@ class _MainScreenWidgetState extends ConsumerState<MainScreenWidget> {
       jobs = data;
       loading = false;
     });
-  }
-
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    ref.read(dataProvier).getCurrentUserData();
-    getJobs();
-    
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    return SafeArea(
-      child: Stack(children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 1,
-          height: MediaQuery.of(context).size.height * 1,
-          //Map
-          child: Map(),
-        ),
-        Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.3,
-                width: MediaQuery.of(context).size.width,
-                // ignore: prefer_const_constructors
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20.0),
-                        topRight: Radius.circular(20.0))),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      left: size.width * 0.03, right: size.width * 0.03),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "You are active",
-                              style: TextStyle(
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                            ),
-                            Container(
-                              height: 40.0,
-                              child: LiteRollingSwitch(
-                                value: true,
-                                textOn: 'Active',
-                                textOnColor: Colors.lightGreenAccent,
-                                textOff: 'Inactive',
-                                textOffColor: Colors.red,
-                                colorOn: Colors.black,
-                                colorOff: Colors.black,
-                                iconOn: Icons.person,
-                                iconOff: Icons.person_off,
-                                onChanged: (bool state) {
-                                  firestore
-                                      .collection('Guard')
-                                      .doc(auth.currentUser!.uid)
-                                      .set({'active': state});
-                                },
-                                onTap: () {},
-                                onDoubleTap: () {},
-                                onSwipe: () {},
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.04,
-                      ),
-                      const Text(
-                        "In Progress",
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.02,
-                      ),
-                      SizedBox(
-                        height: size.height * .14,
-                        width: size.width,
-                        child: ListView.builder(
-                            itemCount: jobs.length,
-                            itemBuilder: ((context, index) => listItem(
-                                jobs[index].hirerName +
-                                    " - " +
-                                    jobs[index].description,
-                                jobs[index].weekDay +
-                                    " | " +
-                                    jobs[index].date +
-                                    " | " +
-                                    jobs[index].duration,
-                                jobs[index].fee,
-                                size))),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ]),
-    );
   }
 
   Widget listItem(String header, String duration, double fee, var size) {
@@ -213,6 +102,116 @@ class _MainScreenWidgetState extends ConsumerState<MainScreenWidget> {
           ],
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    return SafeArea(
+      child: Stack(children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 1,
+          height: MediaQuery.of(context).size.height * 1,
+          //Map
+          child: Map(),
+        ),
+        Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                width: MediaQuery.of(context).size.width,
+                // ignore: prefer_const_constructors
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0))),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: size.width * 0.03, right: size.width * 0.03),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "You are active",
+                              style: TextStyle(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                            Container(
+                              height: 40.0,
+                              child: LiteRollingSwitch(
+                                value: true,
+                                textOn: 'Active',
+                                textOnColor: Colors.lightGreenAccent,
+                                textOff: 'Inactive',
+                                textOffColor: Colors.red,
+                                colorOn: Colors.black,
+                                colorOff: Colors.black,
+                                iconOn: Icons.person,
+                                iconOff: Icons.person_off,
+                                onChanged: (bool state) {
+                                  firestore
+                                      .collection('Guard')
+                                      .doc(auth.currentUser!.uid)
+                                      .set({'active': state} , SetOptions(merge: true));
+                                },
+                                onTap: () {},
+                                onDoubleTap: () {},
+                                onSwipe: () {},
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: size.height * 0.04,
+                      ),
+                      const Text(
+                        "In Progress",
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey),
+                      ),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      SizedBox(
+                        height: size.height * .14,
+                        width: size.width,
+                        child: ListView.builder(
+                            itemCount: jobs.length,
+                            itemBuilder: ((context, index) => listItem(
+                                jobs[index].hirerName +
+                                    " - " +
+                                    jobs[index].description,
+                                jobs[index].weekDay +
+                                    " | " +
+                                    jobs[index].date +
+                                    " | " +
+                                    jobs[index].duration,
+                                jobs[index].fee,
+                                size))),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ]),
     );
   }
 }

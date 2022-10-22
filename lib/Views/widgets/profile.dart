@@ -18,8 +18,14 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-  UserModel? user;
   bool loading = true;
+  UserModel? user;
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   void getData() async {
     var value = await ref.read(dataProvier).getCurrentUserData();
@@ -30,12 +36,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       user = value;
      
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getData();
   }
 
   @override

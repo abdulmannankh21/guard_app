@@ -1,22 +1,15 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:guard_app/Features/authentiction/auth_provider.dart';
-import 'package:guard_app/Views/Steps/step1.dart';
+
 import 'package:guard_app/Views/screens/signUp.dart';
-import 'package:guard_app/Views/screens/password.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class PinCodeVerificationScreen extends ConsumerStatefulWidget {
-  final String verificationId;
-
-  const PinCodeVerificationScreen({
-    Key? key,
-    required this.verificationId,
-  }) : super(key: key);
+  final String verificationId='';
+  static const String routeName = '/otpScreen';
 
   @override
   ConsumerState<PinCodeVerificationScreen> createState() =>
@@ -25,38 +18,45 @@ class PinCodeVerificationScreen extends ConsumerStatefulWidget {
 
 class _PinCodeVerificationScreenState
     extends ConsumerState<PinCodeVerificationScreen> {
-  final TextEditingController otpController = TextEditingController();
-  bool tick = false;
-  String userEmail = "";
   FirebaseAuth auth = FirebaseAuth.instance;
-  String verificationID = "";
+  String currentText = "";
+  final formKey = GlobalKey<FormState>();
   // ..text = "123456";
 
   bool hasError = false;
-  String currentText = "";
-  final formKey = GlobalKey<FormState>();
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  final TextEditingController otpController = TextEditingController();
+  bool tick = false;
+  String userEmail = "";
+  String verificationID = "";
 
   @override
   void dispose() {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void verifyOTP(WidgetRef ref, BuildContext context, String userOTP) {
+    print(verificationID);
     ref.read(authControllerProvider).verifyOTP(
           context,
           verificationID,
           userOTP,
         );
   }
+
   // snackBar Widget
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as String;
+    setState(() {
+      verificationID = args;
+    });
     return Scaffold(
       body: GestureDetector(
         onTap: () {},
@@ -193,9 +193,8 @@ class _PinCodeVerificationScreenState
               GestureDetector(
                 onTap: () {
                   setState(() {
+                    print(otpController.text);
                     verifyOTP(ref, context, otpController.text);
-
-                  
                   });
                 },
                 child: Container(

@@ -57,6 +57,7 @@ class DefaultFirebaseOptions {
     appId: '1:918228134259:android:135423cdf608ab7a1f7d06',
     messagingSenderId: '918228134259',
     projectId: 'guardproject-6cf2e',
+    databaseURL: 'https://guardproject-6cf2e-default-rtdb.firebaseio.com',
     storageBucket: 'guardproject-6cf2e.appspot.com',
   );
 }

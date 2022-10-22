@@ -59,16 +59,15 @@ class _SettingScreenState extends State<SettingScreen> {
               title: Text('Update Password'),
               leading: Icon(Icons.password_rounded),
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => UpdatePasswordScreen()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UpdatePasswordScreen()));
               },
             ),
             ListTile(
               title: Text('Enable Location'),
               leading: Icon(Icons.location_on),
               onTap: () {
-                var location = LocationServices();
-                location.getLatLong();
+                LocationServices.requestLocationPermission();
               },
             ),
           ],
