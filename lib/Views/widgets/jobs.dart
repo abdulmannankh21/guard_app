@@ -11,9 +11,18 @@ class JobsScreen extends ConsumerStatefulWidget {
 }
 
 class _JobsScreenState extends ConsumerState<JobsScreen> {
+  bool isNoJobs = false;
   List<JobModel> jobs = [];
   bool loading = true;
-  bool isNoJobs = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getBookings();
+  }
+
   Future<void> getBookings() async {
     var data = await ref.read(dataProvier).getJobs();
 
@@ -24,14 +33,6 @@ class _JobsScreenState extends ConsumerState<JobsScreen> {
       jobs = data;
       loading = false;
     });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    getBookings();
   }
 
   @override

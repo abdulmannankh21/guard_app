@@ -9,14 +9,96 @@ class Step4 extends StatefulWidget {
 }
 
 class _Step4State extends State<Step4> {
-  int _chevronCounter = 0;
-  int _customCounter = 0;
   var icon = [
     Icon(Icons.person),
     Icon(Icons.description),
     Icon(Icons.person),
     Icon(Icons.payment),
   ];
+
+  int _chevronCounter = 0;
+  int _customCounter = 0;
+
+  Widget getFieldsOne() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Provide your payment information",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black),
+            ),
+
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.06,
+            ),
+            customPic(Icons.account_balance, "Add your bank"),
+            SizedBox(
+              height: 20.0,
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.39),
+              child: Text(
+                "OR",
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+              ),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+
+            customPic(Icons.payment, "Add Credit/Debit Card"),
+
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget customPic(icon, name) {
+    return Container(
+      margin: EdgeInsets.only(
+          left: MediaQuery.of(context).size.width * 0.02,
+          right: MediaQuery.of(context).size.width * 0.02),
+      padding: EdgeInsets.only(left: 20.0, right: 10.0),
+      height: MediaQuery.of(context).size.height * 0.09,
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(7.0),
+      ),
+      child: Center(
+        child: Padding(
+          padding:
+              EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.18),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                color: Colors.grey,
+              ),
+              SizedBox(
+                width: 10.0,
+              ),
+              Text(
+                "$name",
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   void _incrementChevronStepper() {
     setState(() {
@@ -143,85 +225,4 @@ class _Step4State extends State<Step4> {
           ),
         ), // This trailing comma makes auto-formatting nicer for build methods.
       );
-
-  Widget getFieldsOne() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Provide your payment information",
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black),
-            ),
-
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.06,
-            ),
-            customPic(Icons.account_balance, "Add your bank"),
-            SizedBox(
-              height: 20.0,
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.39),
-              child: Text(
-                "OR",
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-              ),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-
-            customPic(Icons.payment, "Add Credit/Debit Card"),
-
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget customPic(icon, name) {
-    return Container(
-      margin: EdgeInsets.only(
-          left: MediaQuery.of(context).size.width * 0.02,
-          right: MediaQuery.of(context).size.width * 0.02),
-      padding: EdgeInsets.only(left: 20.0, right: 10.0),
-      height: MediaQuery.of(context).size.height * 0.09,
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(7.0),
-      ),
-      child: Center(
-        child: Padding(
-          padding:
-              EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.18),
-          child: Row(
-            children: [
-              Icon(
-                icon,
-                color: Colors.grey,
-              ),
-              SizedBox(
-                width: 10.0,
-              ),
-              Text(
-                "$name",
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

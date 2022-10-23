@@ -14,10 +14,10 @@ class PasswordScreen extends ConsumerStatefulWidget {
 }
 
 class _PasswordState extends ConsumerState<PasswordScreen> {
-  bool obsecureState = true;
-  TextEditingController password = TextEditingController();
   TextEditingController confirmPasword = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  bool obsecureState = true;
+  TextEditingController password = TextEditingController();
 
   @override
   void initState() {

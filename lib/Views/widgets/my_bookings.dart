@@ -11,6 +11,31 @@ class Bookings extends StatefulWidget {
 }
 
 class _BookingsState extends State<Bookings> {
+  Widget customCol(day, date, size) {
+    return Container(
+      height: size.height * 0.1,
+      width: size.width * 0.1,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            "$day",
+            style: TextStyle(
+                fontSize: size.width * 0.05,
+                color: Color.fromRGBO(198, 198, 201, 1)),
+          ),
+          SizedBox(
+            height: size.height * 0.02,
+          ),
+          Text(
+            "$date",
+            style: TextStyle(fontSize: size.width * 0.05, color: Colors.black),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -180,31 +205,6 @@ class _BookingsState extends State<Bookings> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget customCol(day, date, size) {
-    return Container(
-      height: size.height * 0.1,
-      width: size.width * 0.1,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            "$day",
-            style: TextStyle(
-                fontSize: size.width * 0.05,
-                color: Color.fromRGBO(198, 198, 201, 1)),
-          ),
-          SizedBox(
-            height: size.height * 0.02,
-          ),
-          Text(
-            "$date",
-            style: TextStyle(fontSize: size.width * 0.05, color: Colors.black),
-          )
-        ],
       ),
     );
   }

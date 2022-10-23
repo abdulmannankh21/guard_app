@@ -14,154 +14,23 @@ class Step2 extends ConsumerStatefulWidget {
 }
 
 class _Step2State extends ConsumerState<Step2> {
-  int _chevronCounter = 0;
-  int _customCounter = 0;
-  io.File? pickedImage;
-  String pickedImagePath = '';
-  List<bool> picked = [false, false, false, false, false];
-  List<String> uploadImagesUrl = ["", "", "", "", ""];
   bool disabled = true;
-
-  List<String> paths = ["", "", "", "", "", ""];
   var icon = [
     Icon(Icons.person),
     Icon(Icons.description),
     Icon(Icons.person),
     Icon(Icons.payment),
   ];
-  void _incrementChevronStepper() {
-    setState(() {
-      if (_chevronCounter != 5) {
-        _chevronCounter++;
-      }
-    });
-  }
 
-  void _decrementChevronStepper() {
-    setState(() {
-      if (_chevronCounter != 0) {
-        _chevronCounter--;
-      }
-    });
-  }
+  List<String> paths = ["", "", "", "", "", ""];
+  List<bool> picked = [false, false, false, false, false];
+  io.File? pickedImage;
+  String pickedImagePath = '';
+  List<String> uploadImagesUrl = ["", "", "", "", ""];
 
-  void _incrementCustomStepper() {
-    setState(() {
-      if (_customCounter != 3) {
-        _customCounter++;
-      }
-    });
-  }
+  int _chevronCounter = 0;
+  int _customCounter = 0;
 
-  void _decrementCustomStepper() {
-    setState(() {
-      if (_customCounter != 0) {
-        _customCounter--;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Color.fromRGBO(255, 255, 254, 1),
-        body: Padding(
-          padding: EdgeInsets.only(
-              left: MediaQuery.of(context).size.width * 0.02,
-              right: MediaQuery.of(context).size.width * 0.02,
-              top: 0.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back_ios,
-                      size: MediaQuery.of(context).size.width * 0.07,
-                    ),
-                    SizedBox(
-                      width: 20.0,
-                    ),
-                    Image.asset('images/header.png'),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                ProgressStepper(
-                  width: MediaQuery.of(context).size.width,
-                  height: 25,
-                  color: Colors.red,
-                  progressColor: Colors.amber,
-                  stepCount: 4,
-                  builder: (index) {
-                    double widthOfStep = 300 / 4;
-                    if (index == 2) {
-                      return ProgressStepWithArrow(
-                        width: widthOfStep,
-                        defaultColor: Color.fromRGBO(247, 247, 247, 1),
-                        progressColor: Colors.amber,
-                        wasCompleted: true,
-                        child: icon[index - 1],
-                      );
-                    }
-                    return ProgressStepWithChevron(
-                      width: widthOfStep,
-                      defaultColor: Color.fromRGBO(247, 247, 247, 1),
-                      progressColor: Colors.amber,
-                      wasCompleted: false,
-                      child: icon[index - 1],
-                    );
-                  },
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.035,
-                ),
-                getFieldsOne(),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                ),
-                InkWell(
-                  onTap: () {
-                    if (!disabled) {
-                      ref.read(storageProvider).saveImages(
-                          context: context,
-                          idFrontURl: uploadImagesUrl[1],
-                          profilePicUrl: uploadImagesUrl[0],
-                          idBackUrl: uploadImagesUrl[2],
-                          licenseFrotUrl: uploadImagesUrl[3],
-                          licenseBackUrl: uploadImagesUrl[4]);
-
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Step3()));
-                    } else {
-                      EasyLoading.showInfo("All the images must be Uploaded");
-                    }
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    decoration: BoxDecoration(
-                        color: disabled
-                            ? Color.fromARGB(255, 79, 79, 79)
-                            : Colors.black),
-                    child: Center(
-                      child: Text(
-                        "Next",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ), // This trailing comma makes auto-formatting nicer for build methods.
-      );
   Widget getFieldsOne() {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
@@ -321,4 +190,138 @@ class _Step2State extends ConsumerState<Step2> {
       });
     } else {}
   }
+
+  void _incrementChevronStepper() {
+    setState(() {
+      if (_chevronCounter != 5) {
+        _chevronCounter++;
+      }
+    });
+  }
+
+  void _decrementChevronStepper() {
+    setState(() {
+      if (_chevronCounter != 0) {
+        _chevronCounter--;
+      }
+    });
+  }
+
+  void _incrementCustomStepper() {
+    setState(() {
+      if (_customCounter != 3) {
+        _customCounter++;
+      }
+    });
+  }
+
+  void _decrementCustomStepper() {
+    setState(() {
+      if (_customCounter != 0) {
+        _customCounter--;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        backgroundColor: Color.fromRGBO(255, 255, 254, 1),
+        body: Padding(
+          padding: EdgeInsets.only(
+              left: MediaQuery.of(context).size.width * 0.02,
+              right: MediaQuery.of(context).size.width * 0.02,
+              top: 0.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Icon(
+                      Icons.arrow_back_ios,
+                      size: MediaQuery.of(context).size.width * 0.07,
+                    ),
+                    SizedBox(
+                      width: 20.0,
+                    ),
+                    Image.asset('images/header.png'),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ProgressStepper(
+                  width: MediaQuery.of(context).size.width,
+                  height: 25,
+                  color: Colors.red,
+                  progressColor: Colors.amber,
+                  stepCount: 4,
+                  builder: (index) {
+                    double widthOfStep = 300 / 4;
+                    if (index == 2) {
+                      return ProgressStepWithArrow(
+                        width: widthOfStep,
+                        defaultColor: Color.fromRGBO(247, 247, 247, 1),
+                        progressColor: Colors.amber,
+                        wasCompleted: true,
+                        child: icon[index - 1],
+                      );
+                    }
+                    return ProgressStepWithChevron(
+                      width: widthOfStep,
+                      defaultColor: Color.fromRGBO(247, 247, 247, 1),
+                      progressColor: Colors.amber,
+                      wasCompleted: false,
+                      child: icon[index - 1],
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.035,
+                ),
+                getFieldsOne(),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.05,
+                ),
+                InkWell(
+                  onTap: () {
+                    if (!disabled) {
+                      ref.read(storageProvider).saveImages(
+                          context: context,
+                          idFrontURl: uploadImagesUrl[1],
+                          profilePicUrl: uploadImagesUrl[0],
+                          idBackUrl: uploadImagesUrl[2],
+                          licenseFrotUrl: uploadImagesUrl[3],
+                          licenseBackUrl: uploadImagesUrl[4]);
+
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Step3()));
+                    } else {
+                      EasyLoading.showInfo("All the images must be Uploaded");
+                    }
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    decoration: BoxDecoration(
+                        color: disabled
+                            ? Color.fromARGB(255, 79, 79, 79)
+                            : Colors.black),
+                    child: Center(
+                      child: Text(
+                        "Next",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ), // This trailing comma makes auto-formatting nicer for build methods.
+      );
 }

@@ -7,23 +7,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class Map extends StatefulWidget {
   @override
   _MapState createState() => _MapState();
-
 }
 
 class _MapState extends State<Map> {
-  final Set<Marker> _markers = {};
-  LatLng _lastMapPosition = _center;
-
-  void _onCameraMove(CameraPosition position) {
-    _lastMapPosition = position.target;
-  }
-  Completer<GoogleMapController> _controller = Completer();
-
   static const LatLng _center = const LatLng(45.521563, -122.677433);
 
-  void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-  }
+  Completer<GoogleMapController> _controller = Completer();
+  LatLng _lastMapPosition = _center;
+  final Set<Marker> _markers = {};
+
   @override
   void _onAddMarkerButtonPressed() {
     setState(() {
@@ -38,6 +30,14 @@ class _MapState extends State<Map> {
         icon: BitmapDescriptor.defaultMarker,
       ));
     });
+  }
+
+  void _onCameraMove(CameraPosition position) {
+    _lastMapPosition = position.target;
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
   }
 
   @override

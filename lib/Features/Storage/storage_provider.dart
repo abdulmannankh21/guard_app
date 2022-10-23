@@ -15,12 +15,12 @@ final storageProvider = Provider((ref) => StorageMethods(
     storage: FirebaseStorage.instance));
 
 class StorageMethods {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  FirebaseStorage storage = FirebaseStorage.instance;
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-
   StorageMethods(
       {required this.auth, required this.firestore, required this.storage});
+
+  FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseStorage storage = FirebaseStorage.instance;
 
   SnackBar customSnackBar({required String content}) {
     return SnackBar(
@@ -82,9 +82,12 @@ class StorageMethods {
     });
   }
 
-
   Future<void> saveUser(
-      {required String token,
+      { required double latitude,
+        required double longitude,
+        required String selectedService,
+        required String city,
+        required String token,
         required String firstName,
       required String secondName,
       required String dateOfBirth,
@@ -100,10 +103,13 @@ class StorageMethods {
     await firestore
         .collection('Guard')
         .doc(auth.currentUser?.uid)
-        .collection('Basic')
-        .doc('info')
         .set(
-      {
+
+      {  'service':selectedService,
+         'latitude':latitude,
+         'longitude':longitude,
+        'uid':FirebaseAuth.instance.currentUser?.uid,
+        'city':city,
         'firstName': firstName,
         'secondName': secondName,
         'dateOfBirth': dateOfBirth,
@@ -112,8 +118,8 @@ class StorageMethods {
         'address': address,
         'token':token
         
-      },
-    ).then((value) {
+      },SetOptions(merge: true))
+    .then((value) {
       EasyLoading.showSuccess("Data added successfully");
       Navigator.push(
         context,
@@ -134,8 +140,6 @@ class StorageMethods {
     await firestore
         .collection('Guard')
         .doc(auth.currentUser?.uid)
-        .collection('Basic')
-        .doc('info')
         .set({
       'profilePicUrl': profilePicUrl,
       'idFrontURl': idFrontURl,
@@ -163,13 +167,7 @@ class StorageMethods {
           .doc(auth.currentUser?.uid)
           .set({'verified': false}, SetOptions(merge: true));
 
-      await firestore
-          .collection('Guard')
-          .doc(auth.currentUser?.uid)
-          .collection('Basic')
-          .doc('Jobs')
-          .set({"job":""});
-
+     
       await firestore
           .collection('Guard')
           .doc(auth.currentUser?.uid)
@@ -180,8 +178,6 @@ class StorageMethods {
       await firestore
           .collection('Guard')
           .doc(auth.currentUser?.uid)
-          .collection('Basic')
-          .doc('info')
           .set({'summary': summary, 'workExperience': workExperience},
               SetOptions(merge: true)).then((value) {
         EasyLoading.showSuccess("Data Added Succesfully");

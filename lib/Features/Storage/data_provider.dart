@@ -9,11 +9,17 @@ import 'package:guard_app/Models/user_model.dart';
 final dataProvier = Provider(((ref) => DataProvider()));
 
 class DataProvider {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  FirebaseAuth auth = FirebaseAuth.instance;
+  static UserModel currentUser = UserModel(
+      firstName: "",
+      profilePicUrl: "",
+      summary: "",
+      job: "",
+      lastName: "",
+      workExperience: "");
 
-   
-  
+  FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   Future<List<JobModel>> getActiveJobs(String id) async {
     List<JobModel> _jobList = [];
     var data = await firestore
@@ -56,15 +62,6 @@ class DataProvider {
     return _jobList;
   }
 
- 
-
-  static UserModel currentUser = UserModel(
-      firstName: "",
-      profilePicUrl: "",
-      summary: "",
-      job: "",
-      lastName: "",
-      workExperience: "");
   Future<double> getUserEarning() async {
     var userData = await firestore
         .collection('Guard')
@@ -78,14 +75,10 @@ class DataProvider {
     return 0.0;
   }
 
- 
-
   Future<UserModel?> getCurrentUserData() async {
     var userData = await firestore
         .collection('Guard')
         .doc(auth.currentUser?.uid)
-        .collection('Basic')
-        .doc('info')
         .get();
 
     UserModel? user;

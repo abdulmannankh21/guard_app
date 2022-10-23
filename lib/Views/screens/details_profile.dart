@@ -11,8 +11,15 @@ class DetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _DetailsScreenState extends ConsumerState<DetailsScreen> {
-  UserModel? user;
   bool loading = true;
+  UserModel? user;
+
+  @override
+  void initState() {
+    super.initState();
+
+    getData();
+  }
 
   void getData() async {
     var value = await ref.read(dataProvier).getCurrentUserData();
@@ -24,11 +31,92 @@ class _DetailsScreenState extends ConsumerState<DetailsScreen> {
   
   }
 
-  @override
-  void initState() {
-    super.initState();
+  Widget getJobs(size) {
+    return Container(
+      margin: EdgeInsets.only(
+          left: size.width * 0.01,
+          right: size.width * 0.01,
+          top: size.height * 0.01),
+      padding: EdgeInsets.only(
+          left: size.width * 0.02,
+          right: size.width * 0.02,
+          top: size.height * 0.01),
+      decoration: BoxDecoration(
+          color: Color.fromRGBO(255, 255, 254, 1),
+          borderRadius: BorderRadius.circular(10.0)),
+      height: size.height * 0.08,
+      width: size.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "steve smith -key holding",
+                style: TextStyle(
+                    fontSize: size.width * 0.04,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Text(
+                "Monday, 16 June | 10:00am - 12:00am",
+                style: TextStyle(
+                    fontSize: size.width * 0.03,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w300),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.star,
+                size: 10.0,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Text(
+                "5.3",
+                style: TextStyle(
+                    fontSize: size.width * 0.024,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w300),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
-    getData();
+  Widget getCustomRow(size) {
+    return Container(
+      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("5 Stars"),
+          Container(
+            margin: EdgeInsets.only(left: 10.0, right: 10.0),
+            width: size.width * 0.5,
+            height: 9.0,
+            decoration: BoxDecoration(
+              color: Colors.amber,
+              borderRadius: BorderRadius.circular(60.0),
+            ),
+          ),
+          Text("110"),
+        ],
+      ),
+    );
   }
 
   @override
@@ -153,94 +241,6 @@ class _DetailsScreenState extends ConsumerState<DetailsScreen> {
           ),
         ),
       
-    );
-  }
-
-  Widget getJobs(size) {
-    return Container(
-      margin: EdgeInsets.only(
-          left: size.width * 0.01,
-          right: size.width * 0.01,
-          top: size.height * 0.01),
-      padding: EdgeInsets.only(
-          left: size.width * 0.02,
-          right: size.width * 0.02,
-          top: size.height * 0.01),
-      decoration: BoxDecoration(
-          color: Color.fromRGBO(255, 255, 254, 1),
-          borderRadius: BorderRadius.circular(10.0)),
-      height: size.height * 0.08,
-      width: size.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "steve smith -key holding",
-                style: TextStyle(
-                    fontSize: size.width * 0.04,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Text(
-                "Monday, 16 June | 10:00am - 12:00am",
-                style: TextStyle(
-                    fontSize: size.width * 0.03,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w300),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.star,
-                size: 10.0,
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Text(
-                "5.3",
-                style: TextStyle(
-                    fontSize: size.width * 0.024,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w300),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget getCustomRow(size) {
-    return Container(
-      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("5 Stars"),
-          Container(
-            margin: EdgeInsets.only(left: 10.0, right: 10.0),
-            width: size.width * 0.5,
-            height: 9.0,
-            decoration: BoxDecoration(
-              color: Colors.amber,
-              borderRadius: BorderRadius.circular(60.0),
-            ),
-          ),
-          Text("110"),
-        ],
-      ),
     );
   }
 }

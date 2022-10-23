@@ -14,38 +14,46 @@ class Step1 extends ConsumerStatefulWidget {
 }
 
 class _Step1State extends ConsumerState<Step1> {
-  LocationServices newLocation = LocationServices();
-
-  void getToken() async {
-  await FirebaseMessaging.instance.getToken().then((token) {
-      setState(() {
-        messageToken = token;
-      });
-    });
-  }
-
-  String? messageToken = '';
-  String firstName = "";
-  String lastName = "";
-  String dob = "";
-  String email = "";
   String address = "";
-  String password = "";
-  String _passwordVisible = "";
-  bool disabled = true;
-
-  final TextEditingController firstNameController = new TextEditingController();
-  final TextEditingController lastNameController = new TextEditingController();
-  final TextEditingController dobController = new TextEditingController();
-  final TextEditingController emailController = new TextEditingController();
   final TextEditingController addressController = new TextEditingController();
+  final TextEditingController cityController = new TextEditingController();
+  String cityName = "";
+  bool disabled = true;
+  String dob = "";
+  final TextEditingController dobController = new TextEditingController();
+  String email = "";
+  final TextEditingController emailController = new TextEditingController();
+  String firstName = "";
+  final TextEditingController firstNameController = new TextEditingController();
+  var icon = [
+    Icon(Icons.person),
+    Icon(Icons.description),
+    Icon(Icons.person),
+    Icon(Icons.payment),
+  ];
+
+  String lastName = "";
+  final TextEditingController lastNameController = new TextEditingController();
+  double latitude = 0.0;
+  double longitude = 0.0;
+  String? messageToken = '';
+  LocationServices newLocation = LocationServices();
+  String password = "";
   final TextEditingController passwordController = new TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    newLocation.getLatLong();
-  }
+  int _chevronCounter = 0;
+  int _customCounter = 0;
+  String _passwordVisible = "";
+  var _selectedService;
+  var _serviceTypes = [
+    'Events Manag. ,Stewards,Door supervisor',
+    'Key Holding & Alarm Response',
+    'Dog handling ',
+    'CCTV monitoring',
+    'VIP close protection',
+    'Traffic Marshal operative/Vehicle immobi. ',
+    'other type of services'
+  ]; // Option 2
 
   @override
   void dispose() {
@@ -59,6 +67,29 @@ class _Step1State extends ConsumerState<Step1> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    LocationServices.requestLocationPermission();
+  }
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        messageToken = token;
+      });
+    });
+  }
+
+  Future<void> setLocation() async {
+    var latLong = await LocationServices.getLatLong();
+
+    setState(() {
+      latitude = latLong[0];
+      longitude = latLong[1];
+    });
+  }
+
   clearText() {
     firstNameController.clear();
     lastNameController.clear();
@@ -68,14 +99,129 @@ class _Step1State extends ConsumerState<Step1> {
     passwordController.clear();
   }
 
-  int _chevronCounter = 0;
-  int _customCounter = 0;
-  var icon = [
-    Icon(Icons.person),
-    Icon(Icons.description),
-    Icon(Icons.person),
-    Icon(Icons.payment),
-  ];
+  Widget getFieldsOne() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Provide your basic information",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            customFields(
+              firstNameController,
+              "First name *",
+              "Enter your first name",
+              null,
+            ),
+            customFields(
+              cityController,
+              "City name*",
+              "Enter your city name in lower case ",
+              null,
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            customFields(lastNameController, "Last name * ",
+                "Enter your Last name", null),
+            SizedBox(
+              height: 10.0,
+            ),
+            customFields(
+              dobController,
+              "Date Of birth *",
+              "e.g 18/23/2022",
+              Icon(Icons.calendar_today),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            customFields(addressController, "Address *", "Enter your Address",
+                Icon(Icons.location_on_rounded)),
+            Padding(
+                padding: const EdgeInsets.only(right: 2),
+                child: Container(
+                  //  width: MediaQuery.of(context).size.width * 0.20,
+                  child: DropdownButton(
+                    hint: Text('Select service  type'),
+                    // Not necessary for Option 1
+                    value: _selectedService,
+                    onChanged: (newValue) {
+                      setLocation();
+                      setState(() {
+                        _selectedService = newValue;
+                      });
+                    },
+                    items: _serviceTypes.map((service) {
+                      return DropdownMenuItem(
+                        child: new Text(service),
+                        value: service,
+                      );
+                    }).toList(),
+                  ),
+                )),
+            Divider(
+              color: Colors.black45,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget customFields(controller, name, hint, icon) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "$name",
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        TextFormField(
+          onChanged: (value) {
+            if (lastNameController.text != "" &&
+                firstNameController.text != "" &&
+                dobController.text != "" &&
+                addressController.text != "") {
+              setState(() {
+                disabled = false;
+              });
+            }
+          },
+          textInputAction: TextInputAction.next,
+          controller: controller,
+          decoration: InputDecoration(
+            suffixIcon: icon,
+            suffixIconColor: Colors.black,
+            border: InputBorder.none,
+            hintText: "$hint",
+            fillColor: Color.fromRGBO(247, 247, 247, 1),
+            filled: true,
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.black, width: 2.0),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Color.fromRGBO(255, 255, 254, 1),
@@ -144,7 +290,8 @@ class _Step1State extends ConsumerState<Step1> {
                       if (lastNameController.text != "" &&
                           firstNameController.text != "" &&
                           dobController.text != "" &&
-                          addressController.text != "") {
+                          addressController.text != "" &&
+                          _selectedService != "") {
                         setState(() {
                           disabled = false;
                         });
@@ -163,7 +310,11 @@ class _Step1State extends ConsumerState<Step1> {
                           clearText();
 
                           ref.read(storageProvider).saveUser(
-                             token: messageToken??"",
+                              latitude :latitude,
+                              longitude :longitude,
+                              selectedService: _selectedService.toString(),
+                              city: cityController.text.toLowerCase(),
+                              token: messageToken ?? "",
                               context: context,
                               firstName: firstName,
                               secondName: lastName,
@@ -200,95 +351,4 @@ class _Step1State extends ConsumerState<Step1> {
           ),
         ), // This trailing comma makes auto-formatting nicer for build methods.
       );
-  Widget getFieldsOne() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Provide your basic information",
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            customFields(
-              firstNameController,
-              "First name *",
-              "Enter your first name",
-              null,
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            customFields(lastNameController, "Last name * ",
-                "Enter your Last name", null),
-            SizedBox(
-              height: 10.0,
-            ),
-            customFields(
-              dobController,
-              "Date Of birth *",
-              "e.g 18/23/2022",
-              Icon(Icons.calendar_today),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            customFields(addressController, "Address *", "Enter your Address",
-                Icon(Icons.location_on_rounded)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget customFields(controller, name, hint, icon) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "$name",
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        SizedBox(
-          height: 10.0,
-        ),
-        TextFormField(
-          onChanged: (value) {
-            if (lastNameController.text != "" &&
-                firstNameController.text != "" &&
-                dobController.text != "" &&
-                addressController.text != "") {
-              setState(() {
-                disabled = false;
-              });
-            }
-          },
-          textInputAction: TextInputAction.next,
-          controller: controller,
-          decoration: InputDecoration(
-            suffixIcon: icon,
-            suffixIconColor: Colors.black,
-            border: InputBorder.none,
-            hintText: "$hint",
-            fillColor: Color.fromRGBO(247, 247, 247, 1),
-            filled: true,
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.black, width: 2.0),
-              borderRadius: BorderRadius.circular(5.0),
-            ),
-          ),
-        )
-      ],
-    );
-  }
 }

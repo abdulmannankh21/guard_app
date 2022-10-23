@@ -10,7 +10,6 @@ class EarningScreen extends ConsumerStatefulWidget {
 }
 
 class _EarningScreenState extends ConsumerState<EarningScreen> {
-
    @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;

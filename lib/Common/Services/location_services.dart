@@ -2,7 +2,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationServices {
-  static Future<void> requestLocationPermission() async {
+  Future<void> getLatLong() async {
     bool servicestatus = await Geolocator.isLocationServiceEnabled();
     Position position;
     double lat = 45.521563;
@@ -23,20 +23,15 @@ class LocationServices {
       } else {
         EasyLoading.showSuccess("GPS Location service is granted");
       }
-    } else {}
-  }
+    } else {
+      position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      print(position.longitude); //Output: 80.24599079
+      print(position.latitude); //Output: 29.6593457
 
-  static Future<List<double>> getLatLong() async {
-    var position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    print(position.longitude); //Output: 80.24599079
-    print(position.latitude); //Output: 29.6593457
-
-    double long = position.longitude;
-    double lat = position.latitude;
-
-    List<double> latlong = [lat, long];
-
-    return latlong;
+      long = position.longitude;
+      lat = position.latitude;
+    }
+    
   }
 }

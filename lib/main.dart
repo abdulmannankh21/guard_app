@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:guard_app/Features/notification/local_notification_service.dart';
+import 'package:guard_app/Views/screens/otp.dart';
+import 'package:guard_app/services/local_notification_service.dart';
 import 'package:guard_app/Views/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:guard_app/firebase_options.dart';
 
 import 'dart:math';
+
+
 
 Future<void> backgroundHandler(RemoteMessage message) async {
   	
@@ -53,7 +56,6 @@ Color shadeColor(Color color, double factor) => Color.fromRGBO(
     shadeValue(color.blue, factor),
     1);
 
-  
 MaterialColor generateMaterialColor(Color color) {
   return MaterialColor(color.value, {
     50: tintColor(color, 0.9),
@@ -68,10 +70,12 @@ MaterialColor generateMaterialColor(Color color) {
     900: shadeColor(color, 0.4),
   });
 }
+
   @override
   Widget build(BuildContext context) {
 
     return MaterialApp(
+      routes:  {PinCodeVerificationScreen.routeName:(context) => PinCodeVerificationScreen()},
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

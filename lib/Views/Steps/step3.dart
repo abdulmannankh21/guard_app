@@ -14,19 +14,114 @@ class Step3 extends ConsumerStatefulWidget {
 }
 
 class _Step3State extends ConsumerState<Step3> {
-  var summary;
-  var work;
-  final TextEditingController summaryController = new TextEditingController();
-  final TextEditingController workController = new TextEditingController();
   bool disabled = true;
-  int _chevronCounter = 0;
-  int _customCounter = 0;
   var icon = [
     Icon(Icons.person),
     Icon(Icons.description),
     Icon(Icons.person),
     Icon(Icons.payment),
   ];
+
+  var summary;
+  final TextEditingController summaryController = new TextEditingController();
+  var work;
+  final TextEditingController workController = new TextEditingController();
+
+  int _chevronCounter = 0;
+  int _customCounter = 0;
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    summaryController.dispose();
+    workController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  clearText() {
+    summaryController.clear();
+    workController.clear();
+  }
+
+  Widget getFieldsOne() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Something About You",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            customFields(summaryController, "Personal Summary*",
+                "Add about yourSelf", null),
+            SizedBox(
+              height: 10.0,
+            ),
+            customFields(workController, "Previous Work*",
+                "Add about your work Experince ", null),
+            SizedBox(
+              height: 10.0,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget customFields(controller, name, hint, icon) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "$name",
+          style: TextStyle(fontSize: 14, color: Colors.black),
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        Container(
+          height: 6 * 24.0,
+          child: TextFormField(
+            onChanged: ((value) {
+              if (summaryController.text != "" && workController.text != "") {
+                setState(() {
+                  disabled = false;
+                });
+              }
+            }),
+            controller: controller,
+            maxLines: 6,
+            decoration: InputDecoration(
+              suffixIcon: icon,
+              border: InputBorder.none,
+              hintText: "$hint",
+              fillColor: Color.fromRGBO(247, 247, 247, 1),
+              filled: true,
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Colors.black, width: 2.0),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
 
   void _incrementChevronStepper() {
     setState(() {
@@ -58,24 +153,6 @@ class _Step3State extends ConsumerState<Step3> {
         _customCounter--;
       }
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    summaryController.dispose();
-    workController.dispose();
-    super.dispose();
-  }
-
-  clearText() {
-    summaryController.clear();
-    workController.clear();
   }
 
   @override
@@ -183,79 +260,4 @@ class _Step3State extends ConsumerState<Step3> {
           ),
         ), // This trailing comma makes auto-formatting nicer for build methods.
       );
-
-  Widget getFieldsOne() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Something About You",
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            customFields(summaryController, "Personal Summary*",
-                "Add about yourSelf", null),
-            SizedBox(
-              height: 10.0,
-            ),
-            customFields(workController, "Previous Work*",
-                "Add about your work Experince ", null),
-            SizedBox(
-              height: 10.0,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget customFields(controller, name, hint, icon) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "$name",
-          style: TextStyle(fontSize: 14, color: Colors.black),
-        ),
-        SizedBox(
-          height: 10.0,
-        ),
-        Container(
-          height: 6 * 24.0,
-          child: TextFormField(
-            onChanged: ((value) {
-              if (summaryController.text != "" && workController.text != "") {
-                setState(() {
-                  disabled = false;
-                });
-              }
-            }),
-            controller: controller,
-            maxLines: 6,
-            decoration: InputDecoration(
-              suffixIcon: icon,
-              border: InputBorder.none,
-              hintText: "$hint",
-              fillColor: Color.fromRGBO(247, 247, 247, 1),
-              filled: true,
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.black, width: 2.0),
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
 }
