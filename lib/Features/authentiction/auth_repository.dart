@@ -19,10 +19,12 @@ class AuthRespository {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void updateEmail(String email) async {
+    print(email);
     await auth.currentUser!.updateEmail(email).then((value) {
       EasyLoading.showSuccess("Email updated successfully");
     }).onError((error, stackTrace) {
-      EasyLoading.showError("Error occured ! try again ");
+      
+      EasyLoading.showError(error.toString().split(']').last);
     });
   }
 
@@ -30,7 +32,7 @@ class AuthRespository {
     await auth.currentUser!.updatePassword(pass).then((value) {
       EasyLoading.showSuccess("Pasword Updated Succesfully");
     }).onError((error, stackTrace) {
-      EasyLoading.showError("Error occured..Try again ");
+      EasyLoading.showError(error.toString().split(']').last);
     });
   }
 
@@ -52,7 +54,7 @@ class AuthRespository {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: ((context) => MainScreen())));
     }).onError((error, stackTrace) {
-      EasyLoading.showError(error.toString());
+      EasyLoading.showError(error.toString().split(']').last);
     });
   }
 
@@ -93,7 +95,7 @@ class AuthRespository {
           errorText = "Unknown error! Try Again";
       }
 
-      EasyLoading.showError(errorText);
+      EasyLoading.showError(e.toString().split(']').last);
     }
   }
 
@@ -103,7 +105,9 @@ class AuthRespository {
     await auth.verifyPhoneNumber(
       codeAutoRetrievalTimeout: ((verificationId) {
         EasyLoading.showInfo("code auto retrival time-out");
-        Navigator.of(context).popAndPushNamed(PinCodeVerificationScreen.routeName,arguments: verificationId);
+        Navigator.of(context).popAndPushNamed(
+            PinCodeVerificationScreen.routeName,
+            arguments: verificationId);
       }),
       verificationCompleted: (phoneAuthCredential) async {
         auth.signInWithCredential(phoneAuthCredential).then((value) {
@@ -122,11 +126,9 @@ class AuthRespository {
       phoneNumber: phoneNumber,
       forceResendingToken: _resendtoken,
       verificationFailed: (FirebaseAuthException e) {
-        if (e.code == 'invalid-phone-number') {
-          EasyLoading.showError("invalid-phone-numer");
-        } else {
-          EasyLoading.showError("Verification Failed");
-        }
+        
+          EasyLoading.showError(e.toString().split(']').last);
+        
 
         // Handle other errors
       },
@@ -162,17 +164,15 @@ class AuthRespository {
                 MaterialPageRoute(builder: ((context) => MainScreen())));
           }
         }).onError((error, stackTrace) {
-          EasyLoading.showError("Error Occured! Try Again");
+          EasyLoading.showError(error.toString().split(']').last);
         });
 
         //verification completed
 
       } on FirebaseAuthException catch (e) {
-        if (e.code == 'account-exists-with-different-credential') {
-          EasyLoading.showError('account-exists-with-different-credential');
-        } else if (e.code == 'invalid-credential') {
-          EasyLoading.showError('invalid-credential');
-        }
+        
+          EasyLoading.showError(e.toString().split(']').last);
+        
       }
     }
 
@@ -195,10 +195,10 @@ class AuthRespository {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: ((context) => PasswordScreen())));
       }).onError((error, stackTrace) {
-        EasyLoading.showError("Verification Failed!. TryAgain");
+        EasyLoading.showError(error.toString().split(']').last);
       });
     } on FirebaseAuthException catch (e) {
-      EasyLoading.showError("Unknown Erro! Try Again");
+      EasyLoading.showError(e.toString().split(']').last);
     }
   }
 }

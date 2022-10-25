@@ -23,7 +23,7 @@ class _Step2State extends ConsumerState<Step2> {
   ];
 
   List<String> paths = ["", "", "", "", "", ""];
-  List<bool> picked = [false, false, false, false, false];
+  List<bool> picked = [false, false, false, false, true];
   io.File? pickedImage;
   String pickedImagePath = '';
   List<String> uploadImagesUrl = ["", "", "", "", ""];
@@ -50,44 +50,35 @@ class _Step2State extends ConsumerState<Step2> {
               height: 10.0,
             ),
             customFields("Profile Pic *",
-                picked[0] ? "  picked" : "Add your Profile Pic", 0),
+                picked[0]  , 0),
 
             SizedBox(
               height: 10.0,
             ),
             customFields(
-                "ID Front*", picked[1] ? "  picked" : "Add ID Front", 1),
+                "Passport Or Drivers License Or Resedential Permit*", picked[1] , 1),
             SizedBox(
               height: 10.0,
             ),
 
-            customFields("ID Back*", picked[2] ? "  picked" : "Add ID Back", 2),
+            customFields("SIA Badge*", picked[2], 2),
+            SizedBox(
+              height: 10.0,
+            ),
+          customFields("picture of your CV *",
+                picked[3] , 3),
             SizedBox(
               height: 10.0,
             ),
 
-            customFields("License Front*",
-                picked[3] ? "  picked" : "Add License Front", 3),
-            SizedBox(
-              height: 10.0,
-            ),
-
-            customFields("License Back*",
-                picked[4] ? "  picked" : "Add License Back", 4),
-            SizedBox(
-              height: 10.0,
-            ),
-
-            // customFields("Password", "Enter your password",Icon(Icons.visibility)),
-            // SizedBox(height: 10.0,),
-            // customFields("Password", "Enter your Address",Icon(Icons.location_on_rounded)),
+           
           ],
         ),
       ),
     );
   }
 
-  Widget customFields(name, hint, index) {
+  Widget customFields(name, picked, index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,29 +92,27 @@ class _Step2State extends ConsumerState<Step2> {
         ),
         DottedBorder(
           dashPattern: [4, 4],
-          child: GestureDetector(
-            onTap: () {
-              try {
-                takePicture(hint, ImageSource.camera, index);
+          child:
+          
+          
+            Container( height: 40,child: picked?Row(mainAxisAlignment: MainAxisAlignment.center,children: [Text("Uploaded")],): Row(children: [Text("Pick Image from  "),IconButton(icon: Icon(Icons.storage_outlined),onPressed: () {
+              
+                 try {
+                takePicture(name, ImageSource.gallery, index);
               } catch (e) {
                 EasyLoading.showError("Error occured while picking image");
               }
-            },
-            child: TextFormField(
-              enabled: false,
-              decoration: InputDecoration(
-                suffixIcon: Icon(Icons.insert_drive_file),
-                border: InputBorder.none,
-                hintText: "$hint",
-                fillColor: Color.fromRGBO(247, 247, 247, 1),
-                filled: true,
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.black, width: 2.0),
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-              ),
-            ),
-          ),
+
+            },) ,Text("  Or "),IconButton(onPressed: (){
+                 try {
+                takePicture(name, ImageSource.camera, index);
+              } catch (e) {
+                EasyLoading.showError("Error occured while picking image");
+              }
+
+            }, icon: Icon(Icons.camera),)],)) 
+            
+        
         )
       ],
     );
@@ -190,6 +179,8 @@ class _Step2State extends ConsumerState<Step2> {
       });
     } else {}
   }
+
+  
 
   void _incrementChevronStepper() {
     setState(() {
@@ -289,11 +280,11 @@ class _Step2State extends ConsumerState<Step2> {
                     if (!disabled) {
                       ref.read(storageProvider).saveImages(
                           context: context,
-                          idFrontURl: uploadImagesUrl[1],
+                          identityUrl: uploadImagesUrl[1],
                           profilePicUrl: uploadImagesUrl[0],
-                          idBackUrl: uploadImagesUrl[2],
-                          licenseFrotUrl: uploadImagesUrl[3],
-                          licenseBackUrl: uploadImagesUrl[4]);
+                          isaURl: uploadImagesUrl[2],
+                          cvUrl: uploadImagesUrl[3],
+                          );
 
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Step3()));

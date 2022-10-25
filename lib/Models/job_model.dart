@@ -11,10 +11,14 @@ class JobModel {
   double fee;
   String profileUrl;
   String weekDay;
+  double latitude;
+  double longitude;
 
   JobModel(
-      {required this.weekDay,
-        required this.profileUrl,
+      {required this.latitude,
+      required this.longitude,
+      required this.weekDay,
+      required this.profileUrl,
       required this.fee,
       required this.hours,
       required this.guardName,
@@ -28,8 +32,10 @@ class JobModel {
 
   static Map<String, dynamic> toMap(JobModel? job) {
     return {
-      'fee':job?.fee,
-      'weekDay' :job?.weekDay,
+      'latitude': job?.latitude,
+      'longitude': job?.longitude,
+      'fee': job?.fee,
+      'weekDay': job?.weekDay,
       'hirerName': job?.hirerName,
       'guardName': job?.guardName,
       'hours': job?.hours,
@@ -45,7 +51,9 @@ class JobModel {
 
   factory JobModel.fromMap(Map<String, dynamic> map) {
     return JobModel(
-      weekDay: map['weekDay']??'',
+      latitude: map['latitude'],
+      longitude: map['longitude'],
+      weekDay: map['weekDay'] ?? '',
       profileUrl: map['profileUrl'] ?? "",
       fee: map['fee'] ?? 0.0,
       hours: map['hours'] ?? 0.0,

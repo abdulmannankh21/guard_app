@@ -177,7 +177,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   const SizedBox(
                     height: 30,
                   ),
-                  textItem("Email or phone ", _emailController, false),
+                  textItem("Email ", _emailController, false),
                   const SizedBox(
                     height: 15,
                   ),
