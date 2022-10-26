@@ -1,15 +1,15 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guard_app/Models/job_model.dart';
 import 'package:guard_app/Models/user_model.dart';
+import 'package:guard_app/services/markers.dart';
 
 final dataProvier = Provider(((ref) => DataProvider()));
 
 class DataProvider {
   static UserModel currentUser = UserModel(
+      cvUrl: "https://www.dgvaishnavcollege.edu.in/dgvaishnav-c/uploads/2021/01/dummy-profile-pic.jpg",
       firstName: "",
       profilePicUrl: "",
       summary: "",
@@ -20,12 +20,13 @@ class DataProvider {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<List<JobModel>> getActiveJobs(String id) async {
+  Future<List<JobModel>> getActiveJobs() async {
     List<JobModel> _jobList = [];
     var data = await firestore
         .collection('Guard')
-        .doc(id)
-        .collection('jobs').where('pending',isEqualTo: true)
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('jobs')
+        .where('pending', isEqualTo: true)
         .get();
 
     var iter = data.docs.iterator;
@@ -33,6 +34,9 @@ class DataProvider {
     while (iter.moveNext()) {
       var booking = iter.current.data();
       var item = JobModel.fromMap(booking);
+      
+      MapMarkers.makeMarkers(
+          item.hirerName, item.description, item.latitude, item.longitude);
 
       _jobList.add(item);
 
@@ -70,22 +74,26 @@ class DataProvider {
         .doc('Earning')
         .get();
 
-    print(userData.data());
-
     return 0.0;
   }
 
   Future<UserModel?> getCurrentUserData() async {
-    var userData = await firestore
-        .collection('Guard')
-        .doc(auth.currentUser?.uid)
-        .get();
+    var userData =
+        await firestore.collection('Guard').doc(auth.currentUser?.uid).get();
 
     UserModel? user;
     if (userData.data() != null) {
       user = UserModel.fromMap(userData.data()!);
     }
-    currentUser = user!;
+    currentUser = user ??
+        UserModel(
+            cvUrl: "",
+            firstName: "",
+            profilePicUrl: "",
+            summary: "",
+            job: "",
+            lastName: "",
+            workExperience: "");
     return user;
   }
 }

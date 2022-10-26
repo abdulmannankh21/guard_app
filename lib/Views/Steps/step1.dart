@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:guard_app/Features/Storage/storage_provider.dart';
+import 'package:guard_app/services/local_notification_service.dart';
 import 'package:guard_app/services/location_services.dart';
 import 'package:progress_stepper/progress_stepper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,13 +48,13 @@ class _Step1State extends ConsumerState<Step1> {
   var _selectedService;
   var _serviceTypes = [
     'Events Manag. ,Stewards,Door supervisor',
-    'Key Holding & Alarm Response',
-    'Dog handling ',
+    'Key Holding ,& Alarm Response',
+    'Dog handling',
     'CCTV monitoring',
     'VIP close protection',
-    'Traffic Marshal operative/Vehicle immobi. ',
-    'other type of services'
-  ]; // Option 2
+    'Traffic Marshal ,operative/Vehicle immobi.',
+    'other type ,of services'
+  ];
 
   @override
   void dispose() {
@@ -71,6 +72,8 @@ class _Step1State extends ConsumerState<Step1> {
   void initState() {
     super.initState();
     LocationServices.requestLocationPermission();
+    LocalNotificationService.requestPermission();
+    getToken();
   }
 
   void getToken() async {
@@ -123,12 +126,7 @@ class _Step1State extends ConsumerState<Step1> {
               "Enter your first name",
               null,
             ),
-            customFields(
-              cityController,
-              "City name*",
-              "Enter your city name in lower case ",
-              null,
-            ),
+          
             SizedBox(
               height: 10.0,
             ),
@@ -136,6 +134,12 @@ class _Step1State extends ConsumerState<Step1> {
                 "Enter your Last name", null),
             SizedBox(
               height: 10.0,
+            ),
+              customFields(
+              cityController,
+              "City name*",
+              "Enter your city name in lower case ",
+              null,
             ),
             customFields(
               dobController,
@@ -148,8 +152,9 @@ class _Step1State extends ConsumerState<Step1> {
             ),
             customFields(addressController, "Address *", "Enter your Address",
                 Icon(Icons.location_on_rounded)),
+                SizedBox(height: 4,),
             Padding(
-                padding: const EdgeInsets.only(right: 2),
+                padding: const EdgeInsets.only(right: 2,top: 3,bottom: 4),
                 child: Container(
                   //  width: MediaQuery.of(context).size.width * 0.20,
                   child: DropdownButton(
@@ -310,11 +315,11 @@ class _Step1State extends ConsumerState<Step1> {
                           clearText();
 
                           ref.read(storageProvider).saveUser(
-                              latitude :latitude,
-                              longitude :longitude,
+                              latitude: latitude,
+                              longitude: longitude,
                               selectedService: _selectedService.toString(),
                               city: cityController.text.toLowerCase(),
-                              token: messageToken ?? "",
+                              token: messageToken ?? '',
                               context: context,
                               firstName: firstName,
                               secondName: lastName,

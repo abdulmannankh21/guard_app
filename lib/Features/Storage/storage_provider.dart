@@ -61,8 +61,6 @@ class StorageMethods {
     await firestore
         .collection('Guard')
         .doc(auth.currentUser?.uid)
-        .collection('Basic')
-        .doc('info')
         .update(
       {
         'firstName': firstName,
@@ -109,7 +107,7 @@ class StorageMethods {
          'latitude':latitude,
          'longitude':longitude,
         'uid':FirebaseAuth.instance.currentUser?.uid,
-        'city':city,
+        'city':city.trim(),
         'firstName': firstName,
         'secondName': secondName,
         'dateOfBirth': dateOfBirth,
@@ -132,20 +130,20 @@ class StorageMethods {
 
   Future<void> saveImages(
       {required BuildContext context,
-      required String idFrontURl,
+      required String isaURl,
       required String profilePicUrl,
-      required String idBackUrl,
-      required String licenseFrotUrl,
-      required String licenseBackUrl}) async {
+      required String cvUrl,
+      required String identityUrl,
+      }) async {
     await firestore
         .collection('Guard')
         .doc(auth.currentUser?.uid)
         .set({
       'profilePicUrl': profilePicUrl,
-      'idFrontURl': idFrontURl,
-      'idBackUrl': idBackUrl,
-      'licenseFrotUrl': licenseFrotUrl,
-      'licenseBackUrl': licenseBackUrl
+      'identityUrl': identityUrl,
+      'cvUrl': cvUrl,
+      'isaUrl': isaURl,
+    
     }, SetOptions(merge: true)).then((value) {
       EasyLoading.showSuccess("Pictures Uploaded Successfully");
       Navigator.push(
@@ -158,7 +156,10 @@ class StorageMethods {
   }
 
   Future<void> addDetail(
-      {required String summary,
+      {required String age,
+        required String height,
+        required String physicalAttribute,
+        required String summary,
       required String workExperience,
       required BuildContext context}) async {
     try {
@@ -178,7 +179,7 @@ class StorageMethods {
       await firestore
           .collection('Guard')
           .doc(auth.currentUser?.uid)
-          .set({'summary': summary, 'workExperience': workExperience},
+          .set({'summary': summary, 'workExperience': workExperience,'age':age,'height':height,'physicalAttribute':physicalAttribute},
               SetOptions(merge: true)).then((value) {
         EasyLoading.showSuccess("Data Added Succesfully");
         Navigator.push(

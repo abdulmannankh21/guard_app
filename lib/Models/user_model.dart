@@ -5,17 +5,16 @@ class UserModel {
   final String workExperience;
   dynamic job;
   final String lastName;
+  final String cvUrl;
 
-  
-
-  UserModel({
-    required this.firstName,
-    required this.profilePicUrl,
-    required this.summary,
-    required this.job,
-    required this.lastName,
-    required this.workExperience
-  });
+  UserModel(
+      {required this.cvUrl,
+        required this.firstName,
+      required this.profilePicUrl,
+      required this.summary,
+      required this.job,
+      required this.lastName,
+      required this.workExperience});
 
   Map<String, dynamic> toMap() {
     return {
@@ -24,18 +23,18 @@ class UserModel {
       'secondName': lastName,
       'summary': summary,
       'workExperience': workExperience,
-      'job':job
+      'job': job
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      firstName: map['firstName'] ?? '',
-      lastName: map['secondName'] ?? '',
-      profilePicUrl: map['profilePicUrl'] ?? '',
-      summary: map['summary'] ?? '',
-      workExperience: map['workExperience'] ?? '',
-      job:map['job'] ?? ''
-    );
+        cvUrl: map['cvUrl'],
+        firstName: map['firstName'] ?? '',
+        lastName: map['secondName'] ?? '',
+        profilePicUrl: map['profilePicUrl'] ?? '',
+        summary: map['summary'] ?? '',
+        workExperience: map['workExperience'] ?? '',
+        job: map['job'] ?? '');
   }
 }

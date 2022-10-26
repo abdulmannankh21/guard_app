@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guard_app/Features/Storage/data_provider.dart';
+import 'package:guard_app/Models/job_model.dart';
 import 'package:guard_app/Models/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,6 +14,7 @@ class DetailsScreen extends ConsumerStatefulWidget {
 class _DetailsScreenState extends ConsumerState<DetailsScreen> {
   bool loading = true;
   UserModel? user;
+  List<JobModel> completedJob = [];
 
   @override
   void initState() {
@@ -24,14 +26,16 @@ class _DetailsScreenState extends ConsumerState<DetailsScreen> {
   void getData() async {
     var value = await ref.read(dataProvier).getCurrentUserData();
 
+    var jobs = await ref.read(dataProvier).getJobs();
+
     setState(() {
       user = value;
+      completedJob = jobs;
       loading = false;
     });
-  
   }
 
-  Widget getJobs(size) {
+  Widget getJobs(size, String header, String body) {
     return Container(
       margin: EdgeInsets.only(
           left: size.width * 0.01,
@@ -84,7 +88,7 @@ class _DetailsScreenState extends ConsumerState<DetailsScreen> {
                 height: 10.0,
               ),
               Text(
-                "5.3",
+                "",
                 style: TextStyle(
                     fontSize: size.width * 0.024,
                     color: Colors.black,
@@ -99,148 +103,151 @@ class _DetailsScreenState extends ConsumerState<DetailsScreen> {
 
   Widget getCustomRow(size) {
     return Container(
-      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("5 Stars"),
-          Container(
-            margin: EdgeInsets.only(left: 10.0, right: 10.0),
-            width: size.width * 0.5,
-            height: 9.0,
-            decoration: BoxDecoration(
-              color: Colors.amber,
-              borderRadius: BorderRadius.circular(60.0),
-            ),
-          ),
-          Text("110"),
-        ],
-      ),
-    );
+        height: size.height * .50,
+        margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+        decoration: BoxDecoration(image: DecorationImage(image: NetworkImage(user?.cvUrl??"https://www.dgvaishnavcollege.edu.in/dgvaishnav-c/uploads/2021/01/dummy-profile-pic.jpg"),fit: BoxFit.fill)));
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return  Scaffold(
-        
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.black,
-          automaticallyImplyLeading: true,
-        ),
-        body: loading?Center(child: CircularProgressIndicator(color: Colors.grey),):Padding(
-          padding:
-              EdgeInsets.only(left: size.width * 0.02, top: size.height * 0.01),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage("${user?.profilePicUrl}"),
-                      radius: 30.0,
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        backgroundColor: Colors.black,
+        automaticallyImplyLeading: true,
+      ),
+      body: loading
+          ? Center(
+              child: CircularProgressIndicator(color: Colors.grey),
+            )
+          : Padding(
+              padding: EdgeInsets.only(
+                  left: size.width * 0.02, top: size.height * 0.01),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage:
+                              NetworkImage("${user?.profilePicUrl}"),
+                          radius: 30.0,
+                        ),
+                      ],
                     ),
-                   
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Text(
-                      "${user?.firstName}  ${user?.lastName}",
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          "${user?.firstName}  ${user?.lastName}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Colors.black),
+                        ),
+                        SizedBox(
+                          width: 5.0,
+                        ),
+                        Icon(
+                          Icons.verified,
+                          color: Colors.grey,
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: size.height * 0.045,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "About",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                          fontSize: size.width * 0.07,
                           color: Colors.black),
                     ),
-                    SizedBox(
-                      width: 5.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "${user?.summary}",
+                      style: TextStyle(
+                          fontSize: size.width * 0.04, color: Colors.grey),
                     ),
-                    Icon(
-                      Icons.verified,
-                      color: Colors.grey,
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: size.height * 0.045,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "About",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: size.width * 0.07,
-                      color: Colors.black),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "${user?.summary}",
-                  style: TextStyle(
-                      fontSize: size.width * 0.04, color: Colors.grey),
-                ),
-              ),
-              Expanded(
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: DefaultTabController(
-                          length: 2,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Container(
-                                constraints: BoxConstraints.expand(height: 30),
-                                child: TabBar(
-                                    labelColor: Colors.black,
-                                    indicatorSize: TabBarIndicatorSize.label,
-                                    tabs: [
-                                      Tab(text: "Jobs"),
-                                      Tab(text: "Reviews"),
-                                    ]),
-                              ),
-                              Expanded(
-                                child: TabBarView(children: [
-                                  Column(
-                                    children: [
-                                      getJobs(size),
-                                    ],
+                  ),
+                  Expanded(
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: DefaultTabController(
+                              length: 2,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Container(
+                                    constraints:
+                                        BoxConstraints.expand(height: 30),
+                                    child: TabBar(
+                                        labelColor: Colors.black,
+                                        indicatorSize:
+                                            TabBarIndicatorSize.label,
+                                        tabs: [
+                                          Tab(text: "Jobs"),
+                                          Tab(text: "Cv"),
+                                        ]),
                                   ),
-                                  Column(
-                                    children: [
-                                      getCustomRow(size),
-                                      getCustomRow(size),
-                                      getCustomRow(size),
-                                      getCustomRow(size),
-                                    ],
+                                  Expanded(
+                                    child: TabBarView(children: [
+                                      SizedBox(
+                                        height: size.height * .40,
+                                        child: ListView.builder(
+                                            itemCount: completedJob.length,
+                                            itemBuilder: ((context, index) =>
+                                                getJobs(
+                                                    size,
+                                                    completedJob[index]
+                                                            .hirerName +
+                                                        "-" +
+                                                        completedJob[index]
+                                                            .description,
+                                                    completedJob[index]
+                                                            .weekDay +
+                                                        " " +
+                                                        completedJob[index]
+                                                            .date +
+                                                        " | " +
+                                                        completedJob[index]
+                                                            .duration))),
+                                      ),
+                                      Column(
+                                        children: [
+                                          getCustomRow(size),
+                                      
+                                        ],
+                                      )
+                                    ]),
                                   )
-                                ]),
-                              )
-                            ],
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ]),
-              )
-            ],
-          ),
-        ),
-      
+                        ]),
+                  )
+                ],
+              ),
+            ),
     );
   }
 }

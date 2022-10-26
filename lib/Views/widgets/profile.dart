@@ -28,7 +28,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   void getData() async {
-    var value = await ref.read(dataProvier).getCurrentUserData();
+    var value = await ref.read(dataProvier).getCurrentUserData().timeout(Duration(seconds: 10));
 
     setState(() {
       if(user?.firstName==null)

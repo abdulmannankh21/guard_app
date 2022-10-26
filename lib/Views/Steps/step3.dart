@@ -14,7 +14,8 @@ class Step3 extends ConsumerStatefulWidget {
 }
 
 class _Step3State extends ConsumerState<Step3> {
-  bool disabled = true;
+  bool disabled1 = true;
+  bool disabled2=true;
   var icon = [
     Icon(Icons.person),
     Icon(Icons.description),
@@ -26,6 +27,10 @@ class _Step3State extends ConsumerState<Step3> {
   final TextEditingController summaryController = new TextEditingController();
   var work;
   final TextEditingController workController = new TextEditingController();
+  final TextEditingController ageController = new TextEditingController();
+  final TextEditingController heightController = new TextEditingController();
+  final TextEditingController physicalAttributeController =
+      new TextEditingController();
 
   int _chevronCounter = 0;
   int _customCounter = 0;
@@ -76,9 +81,57 @@ class _Step3State extends ConsumerState<Step3> {
             SizedBox(
               height: 10.0,
             ),
+            descFields(ageController, "Age", "Enter your age", null),
+            SizedBox(height: 10.0,),
+             descFields(heightController, "Height", "Enter your height", null),
+            SizedBox(height: 10.0,),
+             descFields(physicalAttributeController, "Physical Attributes", "Tell about your Physical Attribute ", null),
+            SizedBox(height: 10.0,)
           ],
         ),
       ),
+    );
+  }
+
+  Widget descFields(controller, name, hint, icon) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "$name",
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        TextFormField(
+          onChanged: (value) {
+            if (ageController.text != "" &&
+                heightController.text != "" &&
+                physicalAttributeController.text != "") {
+              setState(() {
+                disabled1 = false;
+              });
+            }
+          },
+          textInputAction: TextInputAction.next,
+          controller: controller,
+          decoration: InputDecoration(
+            suffixIcon: icon,
+            suffixIconColor: Colors.black,
+            border: InputBorder.none,
+            hintText: "$hint",
+            fillColor: Color.fromRGBO(247, 247, 247, 1),
+            filled: true,
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.black, width: 2.0),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -100,7 +153,7 @@ class _Step3State extends ConsumerState<Step3> {
             onChanged: ((value) {
               if (summaryController.text != "" && workController.text != "") {
                 setState(() {
-                  disabled = false;
+                  disabled2 = false;
                 });
               }
             }),
@@ -218,13 +271,16 @@ class _Step3State extends ConsumerState<Step3> {
                 ),
                 InkWell(
                   onTap: () {
-                    if (!disabled) {
+                    if (!disabled1 && !disabled2) {
                       setState(() {
                         summary = summaryController.text;
                         work = workController.text;
                       });
 
                       ref.read(storageProvider).addDetail(
+                          age:ageController.text,
+                          height:heightController.text,
+                          physicalAttribute:physicalAttributeController.text,
                           summary: summary,
                           workExperience: work,
                           context: context);
@@ -241,9 +297,9 @@ class _Step3State extends ConsumerState<Step3> {
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.07,
                     decoration: BoxDecoration(
-                        color: disabled
-                            ? Color.fromARGB(255, 64, 64, 64)
-                            : Colors.black),
+                        color: (!disabled2&&!disabled1)
+                            ? Color.fromARGB(255, 7, 6, 6)
+                            : Color.fromARGB(255, 72, 72, 72)),
                     child: Center(
                       child: Text(
                         "Next",

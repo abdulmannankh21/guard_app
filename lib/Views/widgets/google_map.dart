@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:guard_app/services/location_services.dart';
+import 'package:guard_app/services/markers.dart';
 
 class Map extends StatefulWidget {
   @override
@@ -10,16 +11,39 @@ class Map extends StatefulWidget {
 }
 
 class _MapState extends State<Map> {
-  static const LatLng _center = const LatLng(45.521563, -122.677433);
+  List<double> location = [];
+  Set<Marker> markers = {};
+  var center;
+  var _lastMapPosition;
+  bool loading = true;
+
+  void getLocation() async {
+    var temp = await LocationServices.getLatLong();
+    var loc = MapMarkers.getMarker;
+
+    setState(() {
+      location = temp;
+      markers = loc;
+      center = LatLng(location[0], location[1]);
+      _lastMapPosition = center;
+      loading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getLocation();
+  }
 
   Completer<GoogleMapController> _controller = Completer();
-  LatLng _lastMapPosition = _center;
-  final Set<Marker> _markers = {};
 
   @override
   void _onAddMarkerButtonPressed() {
     setState(() {
-      _markers.add(Marker(
+      markers.add(Marker(
         // This marker id can be anything that uniquely identifies each marker.
         markerId: MarkerId(_lastMapPosition.toString()),
         position: _lastMapPosition,
@@ -33,7 +57,11 @@ class _MapState extends State<Map> {
   }
 
   void _onCameraMove(CameraPosition position) {
-    _lastMapPosition = position.target;
+
+    setState(() {
+       _lastMapPosition = position.target;
+    });
+   
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -42,32 +70,24 @@ class _MapState extends State<Map> {
 
   @override
   Widget build(BuildContext context) {
-    Size size =MediaQuery.of(context).size;
-    return Stack(
-          children: <Widget>[
-            GoogleMap(
-              onMapCreated: _onMapCreated,
-              markers: _markers,
-              onCameraMove: _onCameraMove,
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 11.0,
-
-              ),
-            ),
-            Padding(
-              padding:  EdgeInsets.only(top: size.height * 0.06,right: 16.0),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: FloatingActionButton(
-                  onPressed: _onAddMarkerButtonPressed,
-                  materialTapTargetSize: MaterialTapTargetSize.padded,
-                  backgroundColor: Colors.black,
-                  child: const Icon(Icons.add_location, size: 25.0),
+    Size size = MediaQuery.of(context).size;
+    return loading
+        ? Center(
+            child: SingleChildScrollView(),
+          )
+        : Stack(
+            children: <Widget>[
+              GoogleMap(
+                onMapCreated: _onMapCreated,
+                markers: markers,
+                onCameraMove: _onCameraMove,
+                initialCameraPosition: CameraPosition(
+                  target: center,
+                  zoom: 11.0,
                 ),
               ),
-            ),
-          ],
-    );
+              
+            ],
+          );
   }
 }

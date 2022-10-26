@@ -11,7 +11,7 @@ class JobsScreen extends ConsumerStatefulWidget {
 }
 
 class _JobsScreenState extends ConsumerState<JobsScreen> {
-  bool isNoJobs = false;
+  
   List<JobModel> jobs = [];
   bool loading = true;
 
@@ -27,9 +27,7 @@ class _JobsScreenState extends ConsumerState<JobsScreen> {
     var data = await ref.read(dataProvier).getJobs();
 
     setState(() {
-      if (data.isEmpty) {
-        isNoJobs = true;
-      }
+     
       jobs = data;
       loading = false;
     });
@@ -55,7 +53,7 @@ class _JobsScreenState extends ConsumerState<JobsScreen> {
         Container(
           height: size.height * 0.7,
           width: size.width,
-          child:  loading?Center(child: isNoJobs?Text("No jobs found "): CircularProgressIndicator(),): ListView.builder(
+          child:  loading?Center(child:  CircularProgressIndicator(),): jobs.isEmpty?Center(child: Text("No Jobs found"),):   ListView.builder(
             itemCount: jobs.length,
             itemBuilder: (context, index) {
               return Container(
