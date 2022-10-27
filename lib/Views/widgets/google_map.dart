@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:guard_app/services/location_services.dart';
 import 'package:guard_app/services/markers.dart';
+import 'package:flutter/gestures.dart';
+
+import 'package:flutter/foundation.dart';
+
 
 class Map extends StatefulWidget {
   @override
@@ -11,34 +15,13 @@ class Map extends StatefulWidget {
 }
 
 class _MapState extends State<Map> {
+  var center;
+  bool loading = true;
   List<double> location = [];
   Set<Marker> markers = {};
-  var center;
-  var _lastMapPosition;
-  bool loading = true;
-
-  void getLocation() async {
-    var temp = await LocationServices.getLatLong();
-    var loc = MapMarkers.getMarker;
-
-    setState(() {
-      location = temp;
-      markers = loc;
-      center = LatLng(location[0], location[1]);
-      _lastMapPosition = center;
-      loading = false;
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    getLocation();
-  }
 
   Completer<GoogleMapController> _controller = Completer();
+  var _lastMapPosition;
 
   @override
   void _onAddMarkerButtonPressed() {
@@ -53,6 +36,27 @@ class _MapState extends State<Map> {
         ),
         icon: BitmapDescriptor.defaultMarker,
       ));
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getLocation();
+  }
+
+  void getLocation() async {
+    var temp = await LocationServices.getLatLong();
+    var loc = MapMarkers.getMarker;
+
+    setState(() {
+      location = temp;
+      markers = loc;
+      center = LatLng(location[0], location[1]);
+      _lastMapPosition = center;
+      loading = false;
     });
   }
 
@@ -78,6 +82,13 @@ class _MapState extends State<Map> {
         : Stack(
             children: <Widget>[
               GoogleMap(
+                compassEnabled: true,
+                myLocationEnabled: true,
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+              new Factory<OneSequenceGestureRecognizer>(
+                () => EagerGestureRecognizer(),
+              ),
+            ].toSet(),
                 onMapCreated: _onMapCreated,
                 markers: markers,
                 onCameraMove: _onCameraMove,
