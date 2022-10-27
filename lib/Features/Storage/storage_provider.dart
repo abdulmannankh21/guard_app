@@ -103,7 +103,8 @@ class StorageMethods {
         .doc(auth.currentUser?.uid)
         .set(
 
-      {  'service':selectedService,
+      { 'deleted':false,
+         'service':selectedService,
          'latitude':latitude,
          'longitude':longitude,
         'uid':FirebaseAuth.instance.currentUser?.uid,
