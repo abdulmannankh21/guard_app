@@ -4,13 +4,16 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guard_app/Models/job_model.dart';
 import 'package:guard_app/Models/user_model.dart';
+import 'package:guard_app/Views/screens/signIn.dart';
 import 'package:guard_app/services/markers.dart';
+import 'package:flutter/material.dart';
 
 final dataProvier = Provider(((ref) => DataProvider()));
 
 class DataProvider {
   static UserModel currentUser = UserModel(
-      cvUrl: "https://www.dgvaishnavcollege.edu.in/dgvaishnav-c/uploads/2021/01/dummy-profile-pic.jpg",
+      cvUrl:
+          "https://www.dgvaishnavcollege.edu.in/dgvaishnav-c/uploads/2021/01/dummy-profile-pic.jpg",
       firstName: "",
       profilePicUrl: "",
       summary: "",
@@ -21,18 +24,24 @@ class DataProvider {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<List<JobModel>> getActiveJobs() async {
+  Future<List<JobModel>> getActiveJobs(BuildContext context) async {
     var tempData =
         await firestore.collection('Guard').doc(auth.currentUser?.uid).get();
 
-    bool isdelted = tempData.data()?['deletd'] ?? false;
+    bool isdelted = tempData.data()?['deleted'] ?? false;
 
     if (isdelted) {
       FirebaseAuth.instance.signOut();
+          
+      
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: ((context) => SignInScreen())),
+          (route) => false);
       EasyLoading.showError(
           "Your account has been delted please contact admin");
     }
-    
+
     List<JobModel> _jobList = [];
     var data = await firestore
         .collection('Guard')
@@ -46,7 +55,7 @@ class DataProvider {
     while (iter.moveNext()) {
       var booking = iter.current.data();
       var item = JobModel.fromMap(booking);
-      
+
       MapMarkers.makeMarkers(
           item.hirerName, item.description, item.latitude, item.longitude);
 

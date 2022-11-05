@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:guard_app/Common/Services/markers.dart';
@@ -12,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MainScreenWidget extends ConsumerStatefulWidget {
+  const MainScreenWidget({Key? key}) : super(key: key);
+
   @override
   ConsumerState<MainScreenWidget> createState() => _MainScreenWidgetState();
 }
@@ -28,7 +29,8 @@ class _MainScreenWidgetState extends ConsumerState<MainScreenWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
+    
     MapMarkers.clearMarker();
     ref.read(dataProvier).getCurrentUserData();
     getJobs();
@@ -37,7 +39,7 @@ class _MainScreenWidgetState extends ConsumerState<MainScreenWidget> {
   }
 
   Future<void> getJobs() async {
-    var data = await ref.read(dataProvier).getActiveJobs();
+    var data = await ref.read(dataProvier).getActiveJobs(context);
 
     setState(() {
       if (data.isEmpty) {
