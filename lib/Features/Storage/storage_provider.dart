@@ -108,7 +108,7 @@ class StorageMethods {
          'latitude':latitude,
          'longitude':longitude,
         'uid':FirebaseAuth.instance.currentUser?.uid,
-        'city':city.trim(),
+        'city':city.trim().toLowerCase(),
         'firstName': firstName,
         'secondName': secondName,
         'dateOfBirth': dateOfBirth,

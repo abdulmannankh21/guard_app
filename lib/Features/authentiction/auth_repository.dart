@@ -23,7 +23,6 @@ class AuthRespository {
     await auth.currentUser!.updateEmail(email).then((value) {
       EasyLoading.showSuccess("Email updated successfully");
     }).onError((error, stackTrace) {
-      
       EasyLoading.showError(error.toString().split(']').last);
     });
   }
@@ -111,12 +110,18 @@ class AuthRespository {
       }),
       verificationCompleted: (phoneAuthCredential) async {
         auth.signInWithCredential(phoneAuthCredential).then((value) {
+          if (value.additionalUserInfo!.isNewUser) {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: ((context) => PasswordScreen())));
+          } else {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: ((context) => MainScreen())));
+          }
+
           EasyLoading.showInfo("Phone Verification Completed");
         }).onError((error, stackTrace) {
           EasyLoading.showError(error.toString());
         });
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: ((context) => PasswordScreen())));
 
         //verification completed
       },
@@ -126,9 +131,7 @@ class AuthRespository {
       phoneNumber: phoneNumber,
       forceResendingToken: _resendtoken,
       verificationFailed: (FirebaseAuthException e) {
-        
-          EasyLoading.showError(e.toString().split(']').last);
-        
+        EasyLoading.showError(e.toString().split(']').last);
 
         // Handle other errors
       },
@@ -170,9 +173,7 @@ class AuthRespository {
         //verification completed
 
       } on FirebaseAuthException catch (e) {
-        
-          EasyLoading.showError(e.toString().split(']').last);
-        
+        EasyLoading.showError(e.toString().split(']').last);
       }
     }
 
@@ -192,8 +193,15 @@ class AuthRespository {
         smsCode: userOTP,
       );
       await auth.signInWithCredential(credential).then((value) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: ((context) => PasswordScreen())));
+        if (value.additionalUserInfo!.isNewUser) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: ((context) => PasswordScreen())));
+        }
+        else
+        {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: ((context) => MainScreen())));
+        }
       }).onError((error, stackTrace) {
         EasyLoading.showError(error.toString().split(']').last);
       });
